@@ -28,7 +28,7 @@ namespace Events.Controllers
         {
             using (var db = new EventsDBContext())
             {
-                db.User.Add(new User{ id = id });
+                db.User.Add(new User{ id = id , name = "name "+ id});
                 db.SaveChanges();
             }
             return "a";
