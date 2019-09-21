@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Events.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Events.Controllers
 {
@@ -8,29 +11,33 @@ namespace Events.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-
+        private EventsDBContext db = new EventsDBContext();
+        private List<User> users = new List<User>();
         // GET api/users
         [HttpGet]
-        public ActionResult<IEnumerable<string>> GetAll()
-        {
-            return new string[] { "users1", "users2" };
+        public ActionResult<List<User>> GetAll()
+        { 
+            users = db.User.ToList();
+            return users;
         }
 
         // GET users/5
         [HttpGet("{id}")]
-        public ActionResult<string> GetById(int id)
+        public ActionResult<User> GetById(int? id)
         {
-            return "wow";
+           if(id != null && id.Value <= db.User.Max(e => e.id)) {
+                users = db.User.ToList();
+                return users[id.Value-1];
+            }
+            RedirectToAction("GetAll");
+            return null; // need to show error message
         }
 
         [HttpPut("{id}")]
         public ActionResult<string> putNewUser(int id)
         {
-            using (var db = new EventsDBContext())
-            {
-                db.User.Add(new User{ id = id , name = "name "+ id});
-                db.SaveChanges();
-            }
+            db.User.Add(new User { id = id, name = "name " + id });
+            db.SaveChanges();
             return "a";
         }
 
