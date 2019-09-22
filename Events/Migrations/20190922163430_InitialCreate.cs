@@ -28,6 +28,10 @@ namespace Events.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     title = table.Column<string>(nullable: false, maxLength: 50),
                     summary = table.Column<string>(nullable: false, maxLength: 200)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Event", x => x.id);
                 }
         );
         }
@@ -38,7 +42,6 @@ namespace Events.Migrations
                 name: "User");
             migrationBuilder.DropTable(
                 name: "Event");
-
         }
     }
 }

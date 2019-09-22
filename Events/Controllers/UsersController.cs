@@ -36,9 +36,23 @@ namespace Events.Controllers
         [HttpPut("{id}")]
         public ActionResult<string> putNewUser(int id)
         {
-            db.User.Add(new User { id = id, name = "name " + id });
+            db.User.Add(new User {name = "name " + id });
             db.SaveChanges();
             return "a";
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<bool> deleteUser(int? id)
+        {
+            User user = db.User.FirstOrDefault(x => x.id == id.Value);
+            if (id != null && user != null)
+            {
+                db.User.Remove(user);
+                db.SaveChanges();
+                return true;
+            }
+            // wrong id, user not found
+            return false;
         }
 
     }
