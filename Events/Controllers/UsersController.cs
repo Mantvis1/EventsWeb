@@ -13,6 +13,7 @@ namespace Events.Controllers
     {
         private EventsDBContext db = new EventsDBContext();
         private List<User> users = new List<User>();
+
         // GET api/users
         [HttpGet]
         public ActionResult<List<User>> GetAll()
