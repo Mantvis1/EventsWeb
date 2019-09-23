@@ -22,9 +22,7 @@ namespace Events.Models
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>()
-                .Property(e => e.id).IsRequired();
+        {           
         }
     }
 }

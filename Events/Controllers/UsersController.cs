@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Events.Constants;
 using Events.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Events.Controllers
 {
@@ -22,11 +21,10 @@ namespace Events.Controllers
             return users;
         }
 
-        // GET users/5
         [HttpGet("{id}")]
         public ActionResult<User> GetById(int? id)
         {
-           if(id != null && id.Value <= db.User.Max(e => e.id)) {
+           if(id != null && id.Value <= db.User.Max(e => e.Id)) {
                 users = db.User.ToList();
                 return users[id.Value-1];
             }
@@ -37,7 +35,7 @@ namespace Events.Controllers
         [HttpPut("{id}")]
         public ActionResult<string> putNewUser(int id)
         {
-            db.User.Add(new User {name = "name " + id });
+            db.User.Add(new User("name"+id, "password"+id, false, false));
             db.SaveChanges();
             return "a";
         }
@@ -45,7 +43,7 @@ namespace Events.Controllers
         [HttpDelete("{id}")]
         public ActionResult<bool> deleteUser(int? id)
         {
-            User user = db.User.FirstOrDefault(x => x.id == id.Value);
+            User user = db.User.FirstOrDefault(x => x.Id == id.Value);
             if (id != null && user != null)
             {
                 db.User.Remove(user);
@@ -54,6 +52,22 @@ namespace Events.Controllers
             }
             // wrong id, user not found
             return false;
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult<bool> banUser(int ?id)
+        {
+            User user = db.User.FirstOrDefault(x => x.Id == id.Value);
+            if (id != null && user != null)
+            {
+                if (user.IsBanned == true)
+                    user.IsBanned = Banned.userIsNotBaned();
+                else
+                    user.IsBanned = Banned.userIsBaned();
+                db.SaveChanges();
+                return true;
+            }
+                return false;
         }
 
     }

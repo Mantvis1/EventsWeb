@@ -58,6 +58,22 @@ namespace Events.Migrations
                     table.ForeignKey("FK_AdminUser", x => x.solvedBy, "User", "id", onDelete: ReferentialAction.NoAction);
                 }
                 );
+            migrationBuilder.CreateTable(
+                name:"UserEvents",
+                 columns: table => new
+                 {
+                     id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                     participan = table.Column<int>(nullable:false),
+                     eventId = table.Column<int>(nullable:false)
+                 },
+                  constraints: table =>
+                  {
+                      table.PrimaryKey("PK_UserEvents", x => x.id);
+                      table.ForeignKey("FK_Participan", x => x.participan, "User", "id", onDelete: ReferentialAction.NoAction);
+                      table.ForeignKey("FK_EventId", x => x.eventId, "Event", "id", onDelete: ReferentialAction.NoAction);
+                  }
+                );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -68,6 +84,8 @@ namespace Events.Migrations
                 name: "Event");
             migrationBuilder.DropTable(
                 name: "Support");
+            migrationBuilder.DropTable(
+               name: "UserEvents");
         }
     }
 }
