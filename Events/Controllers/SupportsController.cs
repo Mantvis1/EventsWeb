@@ -39,5 +39,32 @@ namespace Events.Controllers
             db.SaveChanges();
             return true;
         }
+
+        [HttpPatch("{id}/{solvedBy}/{message}")]
+        public ActionResult<bool> writeSolution(int id, string message, int solvedBy)
+        {
+            Support support = db.Support.FirstOrDefault(x => x.Id == id);
+            if (support != null)
+            {
+                support.SolvedBy = solvedBy;
+                support.Solution = message;
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<bool> deleteSupportMessage(int? id)
+        {
+            Support support = db.Support.FirstOrDefault(x => x.Id == id);
+            if (support != null)
+            {
+                db.Support.Remove(support);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+        }
     }
 }
