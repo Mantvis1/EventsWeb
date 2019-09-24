@@ -5,6 +5,8 @@ namespace Events.Models
     public partial class EventsDBContext : DbContext
     {
         public DbSet<User> User { get; set; }
+        public DbSet<Support> Support { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         public EventsDBContext()
         {

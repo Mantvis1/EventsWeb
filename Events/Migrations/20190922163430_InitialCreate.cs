@@ -14,9 +14,9 @@ namespace Events.Migrations
                     id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(nullable: false),
-                    password = table.Column<string>(nullable:false),
-                    isBanned = table.Column<bool>(nullable:false, defaultValue:false),
-                    isAdmin = table.Column<bool>(nullable:false, defaultValue:false)
+                    password = table.Column<string>(nullable: false),
+                    isBanned = table.Column<bool>(nullable: false, defaultValue: false),
+                    isAdmin = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -31,16 +31,16 @@ namespace Events.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     title = table.Column<string>(nullable: false, maxLength: 50),
                     summary = table.Column<string>(nullable: false, maxLength: 500),
-                    createdBy = table.Column<int>(nullable:false)
+                    createdBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Event", x => x.id);
-                    table.ForeignKey("FK_User", x => x.createdBy,"User","id",onDelete:ReferentialAction.NoAction);
+                    table.ForeignKey("FK_User", x => x.createdBy, "User", "id", onDelete: ReferentialAction.NoAction);
                 }
         );
             migrationBuilder.CreateTable(
-                name:"Support",
+                name: "Support",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
@@ -48,8 +48,8 @@ namespace Events.Migrations
                     title = table.Column<string>(nullable: false, maxLength: 50),
                     summary = table.Column<string>(nullable: false, maxLength: 1000),
                     writenBy = table.Column<int>(nullable: false),
-                    solution = table.Column<string>(nullable: false, maxLength: 200),
-                    solvedBy = table.Column<int>(nullable: false)
+                    solution = table.Column<string>(nullable: false, maxLength: 200, defaultValue: ""),
+                    solvedBy = table.Column<int>(nullable: true, defaultValue: null)
                 },
                 constraints: table =>
                 {
@@ -59,13 +59,13 @@ namespace Events.Migrations
                 }
                 );
             migrationBuilder.CreateTable(
-                name:"UserEvents",
+                name: "UserEvents",
                  columns: table => new
                  {
                      id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                     participan = table.Column<int>(nullable:false),
-                     eventId = table.Column<int>(nullable:false)
+                     participan = table.Column<int>(nullable: false),
+                     eventId = table.Column<int>(nullable: false)
                  },
                   constraints: table =>
                   {
