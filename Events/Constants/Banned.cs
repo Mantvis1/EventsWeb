@@ -2,12 +2,12 @@
 {
     public class Banned
     {
-        public static bool userIsBaned()
+        public static bool banUser()
         {
             return true;
         }
 
-        public static bool userIsNotBaned()
+        public static bool unbanUser()
         {
             return false;
         }

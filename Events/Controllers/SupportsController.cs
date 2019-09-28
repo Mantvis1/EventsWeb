@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SupportsController : ControllerBase
     {

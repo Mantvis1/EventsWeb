@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserEventsController : ControllerBase
     {
@@ -19,11 +19,11 @@ namespace Events.Controllers
 
         }
 
-        [HttpGet("eventId")]
+ /*       [HttpGet("eventId")]
         public ActionResult<int> GetEventParticipantsCount(int eventId)
         {
             return db.userEvents.Where(x => x.EventId == eventId).Count();
-        }
+        }*/
 
         [HttpDelete("userId")]
         public ActionResult<bool> Delete(int userId)

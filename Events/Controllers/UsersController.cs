@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace Events.Controllers
         {
            if(id != null && id.Value <= db.User.Max(e => e.Id)) {
                 users = db.User.ToList();
-                return users[id.Value-1];
+                return users.FirstOrDefault(x => x.Id == id);
             }
             RedirectToAction("GetAll");
             return null; // need to show error message
@@ -61,9 +61,9 @@ namespace Events.Controllers
             if (id != null && user != null)
             {
                 if (user.IsBanned == true)
-                    user.IsBanned = Banned.userIsNotBaned();
+                    user.IsBanned = Banned.unbanUser();
                 else
-                    user.IsBanned = Banned.userIsBaned();
+                    user.IsBanned = Banned.banUser();
                 db.SaveChanges();
                 return true;
             }

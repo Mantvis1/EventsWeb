@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
     {
@@ -34,7 +34,7 @@ namespace Events.Controllers
         [HttpPost]
         public ActionResult<bool> createNewEvent()
         {
-            db.Events.Add(new Event("labai geras pavadinimas", "labai geras aprasymas", 0, 0));
+            db.Events.Add(new Event("labai geras pavadinimas", "labai geras aprasymas"));
             db.SaveChanges();
             return true;
         }
