@@ -7,6 +7,7 @@ namespace Events.Models
         public DbSet<User> User { get; set; }
         public DbSet<Support> Support { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<UserEvents> userEvents { get; set; }
 
         public EventsDBContext()
         {
