@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using Events.Constants;
 using Events.Models;
 using Microsoft.AspNetCore.Http;
@@ -40,11 +39,13 @@ namespace Events.Controllers
         }
 
         [HttpPut("{name}/{password}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<string> putNewUser(string name, string password)
         {
-            db.User.Add(new User(name,password, false, false));
+            User user = new User(name, password, false, false);
+            db.User.Add(user);
             db.SaveChanges();
-            return "new user "+name+" was added";
+            return Created("", user);
         }
 
         [HttpDelete("{id}")]
@@ -63,7 +64,9 @@ namespace Events.Controllers
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<bool> banUser(int ?id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult banUser(int ?id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
             if (id != null && user != null)
@@ -73,9 +76,9 @@ namespace Events.Controllers
                 else
                     user.IsBanned = Banned.banUser();
                 db.SaveChanges();
-                return true;
+                return Ok(user);
             }
-                return false;
+            return NotFound(new Error("User not found"));
         }
 
     }
