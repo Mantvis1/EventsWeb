@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Events.Constants;
 using Events.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
+    // /api/users
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -13,45 +16,50 @@ namespace Events.Controllers
         private EventsDBContext db = new EventsDBContext();
         private List<User> users = new List<User>();
 
-        // GET api/users
         [HttpGet]
-        public ActionResult<List<User>> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult GetAll()
         { 
             users = db.User.ToList();
-            return users;
+            if (users.Count > 0)
+                return Ok(users);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<User> GetById(int? id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult GetById(int? id)
         {
            if(id != null && id.Value <= db.User.Max(e => e.Id)) {
                 users = db.User.ToList();
-                return users.FirstOrDefault(x => x.Id == id);
+                return Ok(users.FirstOrDefault(x => x.Id == id));
             }
-            RedirectToAction("GetAll");
-            return null; // need to show error message
+            return NotFound(new Error("User not found"));
         }
 
-        [HttpPut("{id}")]
-        public ActionResult<string> putNewUser(int id)
+        [HttpPut("{name}/{password}")]
+        public ActionResult<string> putNewUser(string name, string password)
         {
-            db.User.Add(new User("name"+id, "password"+id, false, false));
+            db.User.Add(new User(name,password, false, false));
             db.SaveChanges();
-            return "a";
+            return "new user "+name+" was added";
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<bool> deleteUser(int? id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult deleteUser(int? id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
             if (id != null && user != null)
             {
                 db.User.Remove(user);
                 db.SaveChanges();
-                return true;
+                return Ok(user);
             }
-            // wrong id, user not found
-            return false;
+            return NotFound(new Error("User not found"));
         }
 
         [HttpPatch("{id}")]
