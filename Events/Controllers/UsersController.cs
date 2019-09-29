@@ -10,14 +10,17 @@ namespace Events.Controllers
     // /api/users
     [Route("api/[controller]")]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class UsersController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
         private List<User> users = new List<User>();
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+ 
         public ActionResult GetAll()
         { 
             users = db.User.ToList();
@@ -27,8 +30,6 @@ namespace Events.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
            if(id != null && id.Value <= db.User.Max(e => e.Id)) {
@@ -39,7 +40,6 @@ namespace Events.Controllers
         }
 
         [HttpPut("{name}/{password}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<string> putNewUser(string name, string password)
         {
             User user = new User(name, password, false, false);
@@ -49,8 +49,6 @@ namespace Events.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUser(int? id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
@@ -64,8 +62,6 @@ namespace Events.Controllers
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult banUser(int ?id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);

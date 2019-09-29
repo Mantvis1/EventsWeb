@@ -1,23 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
+    // /api/supports
     [Route("api/[controller]")]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class SupportsController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
         private List<Support> support = new List<Support>();
 
-        // GET supports
-        [HttpGet]
-        public ActionResult<IEnumerable<Support>> GetAll()
+        [HttpGet]     
+        public ActionResult GetAll()
         {
             support = db.Support.ToList();
-            return support;
+            if (support.Count > 0)
+                return Ok(support);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
@@ -26,32 +32,36 @@ namespace Events.Controllers
             if (id != null && id.Value <= db.User.Max(e => e.Id))
             {
                 support = support = db.Support.ToList();
-                return support[id.Value - 1];
+                return Ok(support.FirstOrDefault(x => x.Id == id));
             }
-            RedirectToAction("GetAll");
-            return null; // need to show error message
+            return NotFound(new Error("Support not found"));
         }
 
-        [HttpPost]
-        public ActionResult<bool> createSupportMessage()
+        [HttpPost("{title}/{summary}")]
+        public ActionResult createSupportMessage(string title, string summary)
         {
-            db.Support.Add(new Support("title", "text text some text", 3,"yre",2));
-            db.SaveChanges();
-            return true;
+            if (title != null && summary != null)
+            {
+                Support support = new Support(title, summary, 0, "", 0);
+                db.Support.Add(support);
+                db.SaveChanges();
+                return Ok(support);
+            }
+            return NotFound(new Error("Title and summary can not be empty"));
         }
 
         [HttpPatch("{id}/{solvedBy}/{message}")]
-        public ActionResult<bool> writeSolution(int id, string message, int solvedBy)
+        public ActionResult<bool> writeSolution(int id, string message, int? solvedBy)
         {
             Support support = db.Support.FirstOrDefault(x => x.Id == id);
-            if (support != null)
+            if (support != null && message != null && solvedBy != null)
             {
-                support.SolvedBy = solvedBy;
+                support.SolvedBy = solvedBy.Value;
                 support.Solution = message;
                 db.SaveChanges();
-                return true;
+                return Ok(support);
             }
-            return false;
+            return NotFound(new Error("id, message and solved by can not be empty"));
         }
 
         [HttpDelete("{id}")]
@@ -62,9 +72,10 @@ namespace Events.Controllers
             {
                 db.Support.Remove(support);
                 db.SaveChanges();
-                return true;
+                return Ok(support);
             }
-            return false;
+            return NotFound(new Error("Id not null or dont exists"));
         }
+    }
     }
 }
