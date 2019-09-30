@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
+    // /api/events
     [Route("api/[controller]")]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -17,7 +18,7 @@ namespace Events.Controllers
         private List<Event> events = new List<Event>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<Event>> GetAll()
+        public ActionResult GetAll()
         {
             events = db.Events.ToList();
             if (events.Count > 0)
@@ -25,30 +26,43 @@ namespace Events.Controllers
             return NoContent();
         }
 
-        [HttpDelete("id")]
-        public ActionResult<bool> deleteEvent(int id)
+        [HttpGet("{id}")]
+        public ActionResult getEventById(int id)
+        {
+            Event e = db.Events.FirstOrDefault(x => x.id == id);
+            if (e != null)
+                return Ok(e);
+            return NotFound(new Error("Event not found"));
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult deleteEvent(int id)
         {
             Event @event = db.Events.FirstOrDefault(x => x.id == id);
             if (@event != null)
             {
                 db.Events.Remove(@event);
                 db.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
-        [HttpPost("{title}/{summary}")]
-        public ActionResult createNewEvent(string title, string summary)
-        {
-            if (title != null && summary != null)
-            {
-                Event @event = new Event(title, summary);
-                db.Events.Add(@event);
-                db.SaveChanges();
                 return Ok(@event);
             }
-            return NotFound(new Error("title and summary can not be empty"));
+            return NotFound(new Error("Events not found"));
+        }
+
+        [HttpPost("{title}/{summary}/{createdBy}")]
+        public ActionResult createNewEvent(string title, string summary, int? createdBy)
+        {
+            if (title != null && summary != null && createdBy != null)
+            {
+                if (db.User.FirstOrDefault(x => x.Id == createdBy.Value) != null)
+                {
+                    Event @event = new Event(title, summary, createdBy.Value);
+                    db.Events.Add(@event);
+                    db.SaveChanges();
+                    return Ok(@event);
+                }
+                return NotFound(new Error("user does not exist"));
+            }
+            return NotFound(new Error("title summary and createdBy can not be empty"));
         }
 
         [HttpPut("{id}/{title}/{summary}")]
@@ -65,15 +79,6 @@ namespace Events.Controllers
                 return Ok(@event);
             }
             return NotFound(new Error("event is not found"));
-        }
-
-        [HttpGet("id")]
-        public ActionResult getEvent(int id)
-        {
-            Event @event = db.Events.FirstOrDefault(x => x.id == id);
-            if (@event != null)
-                return Ok(@event);
-            return NotFound(new Error("Event not found"));
         }
     }
 }

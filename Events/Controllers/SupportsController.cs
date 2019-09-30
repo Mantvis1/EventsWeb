@@ -10,6 +10,7 @@ namespace Events.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class SupportsController : ControllerBase
@@ -17,7 +18,7 @@ namespace Events.Controllers
         private EventsDBContext db = new EventsDBContext();
         private List<Support> support = new List<Support>();
 
-        [HttpGet]     
+        [HttpGet]
         public ActionResult GetAll()
         {
             support = db.Support.ToList();
@@ -37,17 +38,21 @@ namespace Events.Controllers
             return NotFound(new Error("Support not found"));
         }
 
-        [HttpPost("{title}/{summary}")]
-        public ActionResult createSupportMessage(string title, string summary)
+        [HttpPost("{writenBy}/{title}/{summary}")]
+        public ActionResult createSupportMessage(int? writenBy, string title, string summary)
         {
-            if (title != null && summary != null)
+            if (writenBy != null && title != null && summary != null)
             {
-                Support support = new Support(title, summary, 0, "", 0);
-                db.Support.Add(support);
-                db.SaveChanges();
-                return Ok(support);
+                if (db.User.FirstOrDefault(x => x.Id == writenBy.Value) != null)
+                {
+                    Support support = new Support(title, summary, writenBy.Value);
+                    db.Support.Add(support);
+                    db.SaveChanges();
+                    return Created("", support);
+                }
+                return NotFound(new Error("User can not be found"));
             }
-            return NotFound(new Error("Title and summary can not be empty"));
+            return NotFound(new Error("UserId, Title and summary can not be empty"));
         }
 
         [HttpPatch("{id}/{solvedBy}/{message}")]
@@ -76,6 +81,5 @@ namespace Events.Controllers
             }
             return NotFound(new Error("Id not null or dont exists"));
         }
-    }
     }
 }

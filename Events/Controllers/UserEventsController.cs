@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
+    // /api/userEvents
     [Route("api/[controller]")]
     [ApiController]
     public class UserEventsController : ControllerBase
