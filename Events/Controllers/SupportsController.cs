@@ -77,7 +77,7 @@ namespace Events.Controllers
             {
                 db.Support.Remove(support);
                 db.SaveChanges();
-                return Ok(support);
+                return NoContent();
             }
             return NotFound(new Error("Id not null or dont exists"));
         }

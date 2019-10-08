@@ -43,7 +43,7 @@ namespace Events.Controllers
             {
                 db.Events.Remove(@event);
                 db.SaveChanges();
-                return Ok(@event);
+                return NoContent();
             }
             return NotFound(new Error("Events not found"));
         }

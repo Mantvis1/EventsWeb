@@ -8,12 +8,12 @@ namespace Events.Models
     {
         [Required]
         public int Id { get; set; }
-        public int Participant { get; set; }
+        public int Participan { get; set; }
         public int EventId { get; set; }
 
-        public UserEvents(int participant, int eventId)
+        public UserEvents(int participan, int eventId)
         {
-            Participant = participant;
+            Participan = participan;
             EventId = eventId;
         }   
     }

@@ -20,7 +20,6 @@ namespace Events.Controllers
         private List<User> users = new List<User>();
 
         [HttpGet]
- 
         public ActionResult GetAll()
         { 
             users = db.User.ToList();
@@ -42,7 +41,7 @@ namespace Events.Controllers
         [HttpPut("{name}/{password}")]
         public ActionResult<string> putNewUser(string name, string password)
         {
-            User user = new User(name, password, false, false);
+            User user = new User(name, password,"email@kate.com", false, false);
             db.User.Add(user);
             db.SaveChanges();
             return Created("", user);
@@ -56,7 +55,7 @@ namespace Events.Controllers
             {
                 db.User.Remove(user);
                 db.SaveChanges();
-                return Ok(user);
+                return NoContent();
             }
             return NotFound(new Error("User not found"));
         }
