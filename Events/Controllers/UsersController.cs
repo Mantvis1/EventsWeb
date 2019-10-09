@@ -9,13 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    // /api/users
     [Route("api/[controller]")]
     [ApiController]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class UsersController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
@@ -23,22 +18,30 @@ namespace Events.Controllers
 
         [HttpGet]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         { 
             users = db.User.ToList();
             if (users.Count > 0)
                 return Ok(users);
-            return NoContent();
+            return NotFound(new Error("Users list is empty"));
         }
 
         [HttpGet("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
            if(id != null && id.Value <= db.User.Max(e => e.Id)) {
                 users = db.User.ToList();
-                return Ok(users.FirstOrDefault(x => x.Id == id));
+                User user = users.FirstOrDefault(x => x.Id == id);
+                if(user != null)    
+                    return Ok(user);
+                return NotFound(new Error("User not found"));
             }
-            return NotFound(new Error("User not found"));
+            return NotFound(new Error("Id is worng"));
         }
 
         [HttpPut("{name}/{password}")]

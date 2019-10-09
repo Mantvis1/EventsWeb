@@ -1,34 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    // /api/supports
     [Route("api/[controller]")]
     [ApiController]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class SupportsController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
         private List<Support> support = new List<Support>();
 
         [HttpGet]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
             support = db.Support.ToList();
             if (support.Count > 0)
                 return Ok(support);
-            return NoContent();
+            return NotFound(new Error("Support message list not found"));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Support> GetById(int? id)
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult GetById(int? id)
         {
             if (id != null && id.Value <= db.User.Max(e => e.Id))
             {

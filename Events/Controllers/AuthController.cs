@@ -27,18 +27,14 @@ namespace Events.Controllers
             if (header.ToString().StartsWith("Basic"))
             {
                 var credValue = header.ToString().Substring("Basic".Length).Trim();
-
                 var userNameAndPasswordenc = Encoding.UTF8.GetString(Convert.FromBase64String(credValue));
-
                 var userNameAndPassword = userNameAndPasswordenc.Split(":");
 
                 User user = db.User.Where(x => x.Name == userNameAndPassword[0] && x.Password == userNameAndPassword[1]).FirstOrDefault();
                 if (user != null)
                 {
                     var claimsData = new[] { new Claim(ClaimTypes.Name, userNameAndPassword[0]) };
-
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("45wgr6dvh634g1kj684hr894v4sg9dgh54vsd4bdf4bs4d9n5cvs4bdfv4z"));
-
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                     var token = new JwtSecurityToken(
@@ -61,23 +57,17 @@ namespace Events.Controllers
             return BadRequest("Something wrong with header");
         }
 
-        [HttpPost("{userName}/{password}/{email}")]
-        public ActionResult register(string userName, string password, string email)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public ActionResult Register([FromBody]UserRegisterModel userRegisterModel)
         {
-            if (userName != null && password != null && email != null)
+            if (userRegisterModel.Name != null && userRegisterModel.Password != null && userRegisterModel.Email != null)
             {
-                User user = new User(userName, password, false, false);
+                User user = new User(userRegisterModel.Name, userRegisterModel.Password, false, false);
                 db.User.Add(user);
                 return Ok(user);
             }
             return NotFound();
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult test()
-        {
-            return Ok();
         }
     }
 }

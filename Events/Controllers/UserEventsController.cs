@@ -6,14 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    // /api/userEvents
     [Route("api/[controller]")]
     [ApiController]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UserEventsController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();

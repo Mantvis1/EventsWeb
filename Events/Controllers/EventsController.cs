@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-    // /api/events
+
     [Route("api/[controller]")]
     [ApiController]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class EventsController : ControllerBase
@@ -17,16 +18,23 @@ namespace Events.Controllers
         private EventsDBContext db = new EventsDBContext();
         private List<Event> events = new List<Event>();
 
+        
         [HttpGet]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
             events = db.Events.ToList();
             if (events.Count > 0)
                 return Ok(events);
-            return NoContent();
+            return NotFound(new Error("0 events was found"));
         }
 
         [HttpGet("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getEventById(int id)
         {
             Event e = db.Events.FirstOrDefault(x => x.id == id);
