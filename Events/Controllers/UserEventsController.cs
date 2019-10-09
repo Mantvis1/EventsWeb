@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,20 +22,16 @@ namespace Events.Controllers
         [HttpGet("{userId}")]
         public ActionResult getUserEvents(int? userId)
         {
-            if (AuthController.isLoggedIn() == false)
+            if (userId != null)
             {
-                if (userId != null)
+                List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == userId.Value).ToList();
+                if (userEvents.Count > 0)
                 {
-                    List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == userId.Value).ToList();
-                    if (userEvents.Count > 0)
-                    {
-                        return Ok(userEvents);
-                    }
-                    return NoContent();
+                    return Ok(userEvents);
                 }
-                return NotFound(new Error("user id not found"));
+                return NoContent();
             }
-            return Unauthorized();
+            return NotFound(new Error("user id not found"));
         }
 
         [HttpDelete("{userId}/{eventId}")]
@@ -61,7 +56,7 @@ namespace Events.Controllers
         {
             if (userId != null && eventId != null)
             {
-                if (db.User.FirstOrDefault(x => x.Id == userId.Value) != null && db.Events.FirstOrDefault(x => x.id == eventId.Value)!= null)
+                if (db.User.FirstOrDefault(x => x.Id == userId.Value) != null && db.Events.FirstOrDefault(x => x.id == eventId.Value) != null)
                 {
                     UserEvents userEvents = new UserEvents(userId.Value, eventId.Value);
                     db.userEvents.Add(userEvents);

@@ -2,6 +2,8 @@
 using System.Linq;
 using Events.Constants;
 using Events.Models;
+using Events.Models.UserModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +22,7 @@ namespace Events.Controllers
         private List<User> users = new List<User>();
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetAll()
         { 
             users = db.User.ToList();
