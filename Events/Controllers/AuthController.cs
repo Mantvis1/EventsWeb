@@ -1,6 +1,7 @@
 ﻿using Events.Models;
 using Events.Models.UserModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,11 @@ namespace Events.Controllers
     { 
         private EventsDBContext db = new EventsDBContext();
 
+        [AllowAnonymous]
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult login(string userName, string password)
         {
             var header = Request.Headers["Authorization"];
@@ -46,11 +51,7 @@ namespace Events.Controllers
                         );
 
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                    return Ok(new
-                    {
-                        token = tokenString,
-                        expired = token.ValidTo
-                    });
+                    return Ok(tokenString);
                 }
                 return NotFound(new Error("user not found"));
             }
@@ -59,12 +60,15 @@ namespace Events.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Register([FromBody]UserRegisterModel userRegisterModel)
         {
             if (userRegisterModel.Name != null && userRegisterModel.Password != null && userRegisterModel.Email != null)
             {
                 User user = new User(userRegisterModel.Name, userRegisterModel.Password, false, false);
                 db.User.Add(user);
+                db.SaveChanges();
                 return Ok(user);
             }
             return NotFound();

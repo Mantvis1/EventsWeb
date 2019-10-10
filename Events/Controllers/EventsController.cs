@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     
@@ -17,7 +16,6 @@ namespace Events.Controllers
     {
         private EventsDBContext db = new EventsDBContext();
         private List<Event> events = new List<Event>();
-
         
         [HttpGet]
         [Authorize]

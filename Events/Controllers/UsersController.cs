@@ -44,21 +44,32 @@ namespace Events.Controllers
             return NotFound(new Error("Id is worng"));
         }
 
-        [HttpPut("{name}/{password}")]
-        public ActionResult<string> putNewUser(string name, string password)
-        {
-            User user = new User(name, password,"email@kate.com", false, false);
-            db.User.Add(user);
-            db.SaveChanges();
-            return Created("", user);
-        }
-
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUser(int? id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
             if (id != null && user != null)
             {
+                List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == id.Value).ToList();
+                if(userEvents.Count > 0)
+                {
+                    foreach(var userEvent in userEvents)
+                    {
+                        db.userEvents.Remove(userEvent);
+                    }
+                    db.SaveChanges();
+                }
+                List<Event> events = db.Events.Where(x => x.CreatedBy == id.Value).ToList();
+                if (userEvents.Count > 0)
+                {
+                    foreach (var e in events)
+                    {
+                        db.Events.Remove(e);
+                    }
+                    db.SaveChanges();
+                }
                 db.User.Remove(user);
                 db.SaveChanges();
                 return NoContent();
@@ -67,6 +78,9 @@ namespace Events.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult banUser(int ?id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
