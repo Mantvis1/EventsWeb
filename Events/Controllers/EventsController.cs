@@ -9,14 +9,12 @@ namespace Events.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
     public class EventsController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
         private List<Event> events = new List<Event>();
-        
+
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,19 +40,31 @@ namespace Events.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteEvent(int id)
         {
             Event @event = db.Events.FirstOrDefault(x => x.id == id);
             if (@event != null)
             {
+                List<UserEvents> userEvents = db.userEvents.Where(x => x.EventId == id).ToList();
+                if (userEvents.Count > 0)
+                {
+                    db.userEvents.RemoveRange(userEvents);
+                    db.SaveChanges();
+                }
                 db.Events.Remove(@event);
                 db.SaveChanges();
                 return NoContent();
             }
-            return NotFound(new Error("Events not found"));
+            return NotFound(new Error("Event not found"));
         }
 
         [HttpPost("{title}/{summary}/{createdBy}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult createNewEvent(string title, string summary, int? createdBy)
         {
             if (title != null && summary != null && createdBy != null)
@@ -72,6 +82,9 @@ namespace Events.Controllers
         }
 
         [HttpPut("{id}/{title}/{summary}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult edtiEventInformation(int id, string title, string summary)
         {
             Event @event = db.Events.FirstOrDefault(x => x.id == id);

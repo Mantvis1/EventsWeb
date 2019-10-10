@@ -21,7 +21,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
-        { 
+        {
             users = db.User.ToList();
             if (users.Count > 0)
                 return Ok(users);
@@ -34,10 +34,11 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
-           if(id != null && id.Value <= db.User.Max(e => e.Id)) {
+            if (id != null && id.Value <= db.User.Max(e => e.Id))
+            {
                 users = db.User.ToList();
                 User user = users.FirstOrDefault(x => x.Id == id);
-                if(user != null)    
+                if (user != null)
                     return Ok(user);
                 return NotFound(new Error("User not found"));
             }
@@ -53,21 +54,21 @@ namespace Events.Controllers
             if (id != null && user != null)
             {
                 List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == id.Value).ToList();
-                if(userEvents.Count > 0)
+                if (userEvents.Count > 0)
                 {
-                    foreach(var userEvent in userEvents)
-                    {
-                        db.userEvents.Remove(userEvent);
-                    }
+                    db.userEvents.RemoveRange(userEvents);
                     db.SaveChanges();
                 }
                 List<Event> events = db.Events.Where(x => x.CreatedBy == id.Value).ToList();
                 if (userEvents.Count > 0)
                 {
-                    foreach (var e in events)
-                    {
-                        db.Events.Remove(e);
-                    }
+                    db.Events.RemoveRange(events);
+                    db.SaveChanges();
+                }
+                List<Support> supports = db.Support.Where(x => x.SolvedBy == id.Value || x.WritenBy == id.Value).ToList();
+                if (supports.Count > 0)
+                {
+                    db.Support.RemoveRange(supports);
                     db.SaveChanges();
                 }
                 db.User.Remove(user);
@@ -81,7 +82,7 @@ namespace Events.Controllers
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult banUser(int ?id)
+        public ActionResult banUser(int? id)
         {
             User user = db.User.FirstOrDefault(x => x.Id == id.Value);
             if (id != null && user != null)
@@ -95,6 +96,5 @@ namespace Events.Controllers
             }
             return NotFound(new Error("User not found"));
         }
-
     }
 }

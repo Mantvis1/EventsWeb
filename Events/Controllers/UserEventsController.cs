@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
@@ -13,6 +15,9 @@ namespace Events.Controllers
         private List<UserEvents> userEvents = new List<UserEvents>();
 
         [HttpGet("{userId}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getUserEvents(int? userId)
         {
             if (userId != null)
@@ -22,12 +27,15 @@ namespace Events.Controllers
                 {
                     return Ok(userEvents);
                 }
-                return NoContent();
+                return NotFound(new Error("0 events were found"));
             }
             return NotFound(new Error("user id not found"));
         }
 
         [HttpDelete("{userId}/{eventId}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUserEvent(int? userId, int? eventId)
         {
             if (userId != null && eventId != null)
@@ -39,12 +47,15 @@ namespace Events.Controllers
                     db.SaveChanges();
                     return NoContent();
                 }
-                return NoContent();
+                return NotFound(new Error("event not found"));
             }
             return NotFound(new Error("user or event id not found"));
         }
 
         [HttpPost("{userId}/{eventId}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult joinEvent(int? userId, int? eventId)
         {
             if (userId != null && eventId != null)
