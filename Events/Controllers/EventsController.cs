@@ -16,7 +16,6 @@ namespace Events.Controllers
         private List<Event> events = new List<Event>();
 
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()

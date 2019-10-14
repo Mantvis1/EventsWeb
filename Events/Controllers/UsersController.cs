@@ -3,6 +3,7 @@ using System.Linq;
 using Events.Constants;
 using Events.Models;
 using Events.Models.UserModels;
+using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace Events.Controllers
     {
         private EventsDBContext db = new EventsDBContext();
         private List<User> users = new List<User>();
+        private UserService userService = new UserService();
 
         [HttpGet]
         [Authorize]
@@ -22,10 +24,9 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
-            users = db.User.ToList();
-            if (users.Count > 0)
-                return Ok(users);
-            return NotFound(new Error("Users list is empty"));
+            if (userService.getListLength() > 0)
+                return Ok(userService.getAllUsers());
+            return NotFound(ErrorService.GetError("Users list is empty"));
         }
 
         [HttpGet("{id}")]
