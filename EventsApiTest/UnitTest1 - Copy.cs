@@ -3,7 +3,7 @@ using Xunit;
 
 namespace EventsApiTest
 {
-    public class UnitTest1
+    public class Test
     {
         [Fact]
         public void Test1()

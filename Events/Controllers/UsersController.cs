@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Events.Constants;
 using Events.Models;
 using Events.Models.UserModels;
 using Events.Services;
@@ -17,6 +16,7 @@ namespace Events.Controllers
         private EventsDBContext db = new EventsDBContext();
         private List<User> users = new List<User>();
         private UserService userService = new UserService();
+        private UserValidationService validationService = new UserValidationService();
 
         [HttpGet]
         [Authorize]
@@ -35,15 +35,13 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
-            if (id != null && id.Value <= db.User.Max(e => e.Id))
+            if (validationService.isIdNotEqualsToNull(id))
             {
-                users = db.User.ToList();
-                User user = users.FirstOrDefault(x => x.Id == id);
-                if (user != null)
-                    return Ok(user);
-                return NotFound(new Error("User not found"));
+                if (userService.getUserById(id.Value) != null)
+                    return Ok(userService.getUserById(id.Value));
+                return NotFound(ErrorService.GetError("User not found"));
             }
-            return NotFound(new Error("Id is worng"));
+            return NotFound(ErrorService.GetError("Id is wrong"));
         }
 
         [HttpDelete("{id}")]
@@ -51,32 +49,13 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUser(int? id)
         {
-            User user = db.User.FirstOrDefault(x => x.Id == id.Value);
-            if (id != null && user != null)
+            User user = userService.getUserById(id.Value);
+            if (validationService.isIdNotEqualsToNull(id) && validationService.isUserEqualsToNull(user))
             {
-                List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == id.Value).ToList();
-                if (userEvents.Count > 0)
-                {
-                    db.userEvents.RemoveRange(userEvents);
-                    db.SaveChanges();
-                }
-                List<Event> events = db.Events.Where(x => x.CreatedBy == id.Value).ToList();
-                if (userEvents.Count > 0)
-                {
-                    db.Events.RemoveRange(events);
-                    db.SaveChanges();
-                }
-                List<Support> supports = db.Support.Where(x => x.SolvedBy == id.Value || x.WritenBy == id.Value).ToList();
-                if (supports.Count > 0)
-                {
-                    db.Support.RemoveRange(supports);
-                    db.SaveChanges();
-                }
-                db.User.Remove(user);
-                db.SaveChanges();
+                userService.deleteUserById(id.Value, user);
                 return NoContent();
             }
-            return NotFound(new Error("User not found"));
+            return NotFound(ErrorService.GetError("User not found"));
         }
 
         [HttpPatch("{id}")]
@@ -85,17 +64,13 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult banUser(int? id)
         {
-            User user = db.User.FirstOrDefault(x => x.Id == id.Value);
-            if (id != null && user != null)
+            User user = userService.getUserById(id.Value);
+            if (validationService.isIdNotEqualsToNull(id) && validationService.isUserEqualsToNull(user))
             {
-                if (user.IsBanned == true)
-                    user.IsBanned = Banned.unbanUser();
-                else
-                    user.IsBanned = Banned.banUser();
-                db.SaveChanges();
+                userService.BanOrUnban(user);
                 return Ok(user);
             }
-            return NotFound(new Error("User not found"));
+            return NotFound(ErrorService.GetError("User not found"));
         }
     }
 }

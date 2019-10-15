@@ -1,5 +1,6 @@
 ﻿using Events.Models;
 using Events.Models.UserModels;
+using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -53,9 +54,9 @@ namespace Events.Controllers
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
                     return Ok(tokenString);
                 }
-                return NotFound(new Error("user not found"));
+                return NotFound(ErrorService.GetError("user not found"));
             }
-            return BadRequest("Something wrong with header");
+            return BadRequest(ErrorService.GetError("Something wrong with header"));
         }
 
         [AllowAnonymous]
