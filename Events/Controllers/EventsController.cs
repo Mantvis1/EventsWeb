@@ -75,7 +75,7 @@ namespace Events.Controllers
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult edtiEventInformation(int? id,[FromBody]EventUpdateFrom @event)
+        public ActionResult edtiEventInformation(int? id, [FromBody]EventUpdateFrom @event)
         {
             if (eventsService.getEventById(id.Value) != null)
             {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,8 @@ namespace Events.Controllers
     public class SupportsController : ControllerBase
     {
         private EventsDBContext db = new EventsDBContext();
-        private List<Support> supports = new List<Support>();
+        private SupportService supportService = new SupportService();
+        private SupportValidationService validationService = new SupportValidationService();
 
         [HttpGet]
         [Authorize]
@@ -20,10 +22,9 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
-            supports = db.Support.ToList();
-            if (supports.Count > 0)
-                return Ok(supports);
-            return NotFound(new Error("Support message list not found"));
+            if (supportService.getAllSuportsCount() > 0)
+                return Ok(supportService.getAllSuports());
+            return NotFound(ErrorService.GetError("Support message list not found"));
         }
 
         [HttpGet("{id}")]
@@ -32,70 +33,67 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
-            if (id != null && id.Value <= db.User.Max(e => e.Id))
+            if (validationService.isIdEqualToNull(id))
             {
-                supports = db.Support.ToList();
-                Support support = supports.FirstOrDefault(x => x.Id == id);
-                if (support != null)
+                if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value)))
                 {
-                    return Ok(support);
+                    return Ok(supportService.getSupportById(id.Value));
                 }
-                return NotFound(new Error("Support not found"));
+                return NotFound(ErrorService.GetError("Support not found"));
             }
-            return NotFound(new Error("Support id not found"));
+            return NotFound(ErrorService.GetError("Support id not found"));
         }
 
-        [HttpPost("{writenBy}/{title}/{summary}")]
+        [HttpPost("new")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult createSupportMessage(int? writenBy, string title, string summary)
+        public ActionResult createSupportMessage([FromBody]Support support)
         {
-            if (writenBy != null && title != null && summary != null)
+
+            if (validationService.isSupportFromFilled(support.WritenBy,support.Title,support.Summary))
             {
-                if (db.User.FirstOrDefault(x => x.Id == writenBy.Value) != null)
+                if (validationService.ifObejectIsNull(support))
                 {
-                    Support support = new Support(title, summary, writenBy.Value);
-                    db.Support.Add(support);
-                    db.SaveChanges();
+                    supportService.AddSupportToDatabase(support);
                     return Created("", support);
                 }
-                return NotFound(new Error("User can not be found"));
+                return NotFound(ErrorService.GetError("User can not be found"));
             }
-            return NotFound(new Error("UserId, Title and summary can not be empty"));
+            return NotFound(ErrorService.GetError("UserId, Title and summary can not be empty"));
         }
 
+        // need to finish it
         [HttpPatch("{id}/{solvedBy}/{message}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<bool> writeSolution(int id, string message, int? solvedBy)
+        public ActionResult<bool> writeSolution(int? id, string message, int? solvedBy)
         {
-            Support support = db.Support.FirstOrDefault(x => x.Id == id);
-            if (support != null && message != null && solvedBy != null)
+            if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value))
+                && validationService.textFieldValidation(message) && validationService.creatorValidation(solvedBy))
             {
-                support.SolvedBy = solvedBy.Value;
-                support.Solution = message;
+                supportService.getSupportById(id.Value).SolvedBy = solvedBy.Value;
+                supportService.getSupportById(id.Value).Solution = message;
                 db.SaveChanges();
-                return Ok(support);
+                return Ok(supportService.getSupportById(id.Value));
             }
-            return NotFound(new Error("id, message and solved by can not be empty"));
+            return NotFound(ErrorService.GetError("id, message and solved by can not be empty"));
         }
 
         [HttpDelete("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<bool> deleteSupportMessage(int? id)
+        public ActionResult deleteSupportMessage(int? id)
         {
-            Support support = db.Support.FirstOrDefault(x => x.Id == id);
-            if (support != null)
+            if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value)))
             {
-                db.Support.Remove(support);
+                db.Support.Remove(supportService.getSupportById(id.Value));
                 db.SaveChanges();
                 return NoContent();
             }
-            return NotFound(new Error("Id not null or dont exists"));
+            return NotFound(ErrorService.GetError("Id not null or dont exists"));
         }
     }
 }
