@@ -7,10 +7,10 @@ namespace Events.Services
     public class SupportService
     {
         private EventsDBContext db = new EventsDBContext();
-        
+
         private List<Support> getSupportsListByWriterId(int id)
         {
-           return db.Support.Where(x => x.WritenBy == id).ToList();
+            return db.Support.Where(x => x.WritenBy == id).ToList();
         }
 
         private List<Support> getSupportsListBySolverId(int id)

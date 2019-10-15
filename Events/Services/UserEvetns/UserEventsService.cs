@@ -20,12 +20,12 @@ namespace Events.Services
 
         public List<UserEvents> getUserEventsByEventId(int id)
         {
-            return db.userEvents.Where(x => x.Participan == id).ToList();
+            return db.userEvents.Where(x => x.EventId == id).ToList();
         }
 
         public int getUserEventsByEventIdCount(int id)
         {
-            return db.userEvents.Where(x => x.Participan == id).ToList().Count;
+            return db.userEvents.Where(x => x.EventId == id).ToList().Count;
         }
     }
 }

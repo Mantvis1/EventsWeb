@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Events.Models;
-using Events.Models.UserModels;
+﻿using Events.Models.UserModels;
 using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

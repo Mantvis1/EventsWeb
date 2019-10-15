@@ -56,6 +56,7 @@ namespace Events.Services
                 db.Support.RemoveRange(supportService.getSupportList(id));
                 db.SaveChanges();
             }
+
             db.User.Remove(user);
             db.SaveChanges();
         }

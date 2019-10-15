@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Events.Models;
+﻿using Events.Models;
 using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,17 +11,15 @@ namespace Events.Controllers
 
     public class EventsController : ControllerBase
     {
-        private EventsDBContext db = new EventsDBContext();
-        private List<Event> events = new List<Event>();
         private EventService eventsService = new EventService();
         private EventValidationService eventValidation = new EventValidationService();
+        private UserService userService = new UserService();
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
-
             if (eventsService.getAllEventsCount() > 0)
                 return Ok(eventsService.getAllEvents());
             return NotFound(ErrorService.GetError("0 events was found"));
@@ -39,7 +35,7 @@ namespace Events.Controllers
             {
                 if (eventValidation.isUserEqualsToNull(eventsService.getEventById(id.Value)))
                     return Ok(eventsService.getEventById(id.Value));
-                return NotFound(new Error("Event not found"));
+                return NotFound(ErrorService.GetError("Event not found"));
             }
             return NotFound(ErrorService.GetError("Wrong id"));
         }
@@ -50,59 +46,42 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteEvent(int id)
         {
-            Event @event = eventsService.getEventById(id);
-            if (@event != null)
+            if (eventsService.getEventById(id) != null)
             {
-                List<UserEvents> userEvents = db.userEvents.Where(x => x.EventId == id).ToList();
-                if (userEvents.Count > 0)
-                {
-                    db.userEvents.RemoveRange(userEvents);
-                    db.SaveChanges();
-                }
-                db.Events.Remove(@event);
-                db.SaveChanges();
+                eventsService.deleteEvent(id);
                 return NoContent();
             }
-            return NotFound(new Error("Event not found"));
+            return NotFound(ErrorService.GetError("Event not found"));
         }
 
-        [HttpPost("{title}/{summary}/{createdBy}")]
+        [HttpPost("new")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult createNewEvent(string title, string summary, int? createdBy)
+        public ActionResult createNewEvent([FromBody]Event @event)
         {
-            if (title != null && summary != null && createdBy != null)
+            if (eventValidation.newEventCreation(@event.title, @event.summary, @event.CreatedBy))
             {
-                if (db.User.FirstOrDefault(x => x.Id == createdBy.Value) != null)
+                if (userService.getUserById(@event.CreatedBy) != null)
                 {
-                    Event @event = new Event(title, summary, createdBy.Value);
-                    db.Events.Add(@event);
-                    db.SaveChanges();
-                    return Ok(@event);
+                    return Ok(eventsService.createNewEvent(@event.title, @event.summary, @event.CreatedBy));
                 }
-                return NotFound(new Error("user does not exist"));
+                return NotFound(ErrorService.GetError("user does not exist"));
             }
-            return NotFound(new Error("title summary and createdBy can not be empty"));
+            return NotFound(ErrorService.GetError("title summary and createdBy can not be empty"));
         }
 
-        [HttpPut("{id}/{title}/{summary}")]
+        [HttpPut("edit/{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult edtiEventInformation(int id, string title, string summary)
+        public ActionResult edtiEventInformation(int? id,[FromBody]EventUpdateFrom @event)
         {
-            Event @event = db.Events.FirstOrDefault(x => x.id == id);
-            if (@event != null)
+            if (eventsService.getEventById(id.Value) != null)
             {
-                if (title != null)
-                    @event.title = title;
-                if (summary != null)
-                    @event.summary = summary;
-                db.SaveChanges();
-                return Ok(@event);
+                return Ok(eventsService.editEventInformation(id.Value, @event.title, @event.summary));
             }
-            return NotFound(new Error("event is not found"));
+            return NotFound(ErrorService.GetError("event is not found"));
         }
     }
 }
