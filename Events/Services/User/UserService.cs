@@ -59,6 +59,5 @@ namespace Events.Services
             db.User.Remove(user);
             db.SaveChanges();
         }
-
     }
 }

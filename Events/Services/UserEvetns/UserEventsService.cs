@@ -17,5 +17,15 @@ namespace Events.Services
         {
             return db.userEvents.Where(x => x.Participan == id).ToList().Count;
         }
+
+        public List<UserEvents> getUserEventsByEventId(int id)
+        {
+            return db.userEvents.Where(x => x.Participan == id).ToList();
+        }
+
+        public int getUserEventsByEventIdCount(int id)
+        {
+            return db.userEvents.Where(x => x.Participan == id).ToList().Count;
+        }
     }
 }

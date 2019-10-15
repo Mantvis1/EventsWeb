@@ -13,8 +13,6 @@ namespace Events.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private EventsDBContext db = new EventsDBContext();
-        private List<User> users = new List<User>();
         private UserService userService = new UserService();
         private UserValidationService validationService = new UserValidationService();
 
@@ -37,7 +35,7 @@ namespace Events.Controllers
         {
             if (validationService.isIdNotEqualsToNull(id))
             {
-                if (userService.getUserById(id.Value) != null)
+                if (validationService.isUserEqualsToNull(userService.getUserById(id.Value)))
                     return Ok(userService.getUserById(id.Value));
                 return NotFound(ErrorService.GetError("User not found"));
             }

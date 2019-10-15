@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events.Models;
+using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,28 +15,33 @@ namespace Events.Controllers
     {
         private EventsDBContext db = new EventsDBContext();
         private List<Event> events = new List<Event>();
+        private EventService eventsService = new EventService();
+        private EventValidationService eventValidation = new EventValidationService();
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
-            events = db.Events.ToList();
-            if (events.Count > 0)
-                return Ok(events);
-            return NotFound(new Error("0 events was found"));
+
+            if (eventsService.getAllEventsCount() > 0)
+                return Ok(eventsService.getAllEvents());
+            return NotFound(ErrorService.GetError("0 events was found"));
         }
 
         [HttpGet("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult getEventById(int id)
+        public ActionResult getEventById(int? id)
         {
-            Event e = db.Events.FirstOrDefault(x => x.id == id);
-            if (e != null)
-                return Ok(e);
-            return NotFound(new Error("Event not found"));
+            if (eventValidation.isIdNotEqualsToNull(id))
+            {
+                if (eventValidation.isUserEqualsToNull(eventsService.getEventById(id.Value)))
+                    return Ok(eventsService.getEventById(id.Value));
+                return NotFound(new Error("Event not found"));
+            }
+            return NotFound(ErrorService.GetError("Wrong id"));
         }
 
         [HttpDelete("{id}")]
@@ -44,7 +50,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteEvent(int id)
         {
-            Event @event = db.Events.FirstOrDefault(x => x.id == id);
+            Event @event = eventsService.getEventById(id);
             if (@event != null)
             {
                 List<UserEvents> userEvents = db.userEvents.Where(x => x.EventId == id).ToList();
