@@ -28,5 +28,12 @@ namespace Events.Services
                 return false;
             return true;
         }
+
+        public bool emailValidation(string email)
+        {
+            if (textValidation(email) && email.Contains('@'))
+                return true;
+            return false;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Events.Services
     {
         private EventsDBContext db = new EventsDBContext();
         private UserEventsService userEventsService = new UserEventsService();
-        private EventValidationService validationService = new EventValidationService();
+        private ValidationService validationService = new ValidationService();
 
         public List<Event> getEventsListByCreatorId(int id)
         {
@@ -58,9 +58,9 @@ namespace Events.Services
         public Event editEventInformation(int id, string title, string summary)
         {
             Event @event = getEventById(id);
-            if (validationService.textFieldValidation(title))
+            if (validationService.textValidation(title))
                 @event.title = title;
-            if (validationService.textFieldValidation(summary))
+            if (validationService.textValidation(summary))
                 @event.summary = summary;
             db.SaveChanges();
             return @event;

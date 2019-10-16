@@ -7,7 +7,7 @@ namespace Events.Services
     public class SupportService
     {
         private EventsDBContext db = new EventsDBContext();
-        private SupportValidationService validationService = new SupportValidationService();
+    //    private ValidationService validationService = new ValidationService();
 
         private List<Support> getSupportsListByWriterId(int id)
         {

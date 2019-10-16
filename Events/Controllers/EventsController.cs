@@ -46,7 +46,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteEvent(int id)
         {
-            if (validationService.objectValidation(eventsService.getEventById(id))) // object validation
+            if (validationService.objectValidation(eventsService.getEventById(id)))
             {
                 eventsService.deleteEvent(id);
                 return NoContent();
