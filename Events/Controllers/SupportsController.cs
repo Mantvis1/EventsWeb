@@ -14,7 +14,7 @@ namespace Events.Controllers
     {
         private EventsDBContext db = new EventsDBContext();
         private SupportService supportService = new SupportService();
-        private SupportValidationService validationService = new SupportValidationService();
+        private ValidationService validationService = new ValidationService();
 
         [HttpGet]
         [Authorize]
@@ -33,9 +33,9 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
-            if (validationService.isIdEqualToNull(id))
+            if (validationService.idValdation(id))
             {
-                if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value)))
+                if (validationService.objectValidation(supportService.getSupportById(id.Value)))
                 {
                     return Ok(supportService.getSupportById(id.Value));
                 }
@@ -51,9 +51,11 @@ namespace Events.Controllers
         public ActionResult createSupportMessage([FromBody]Support support)
         {
 
-            if (validationService.isSupportFromFilled(support.WritenBy,support.Title,support.Summary))
+            if (validationService.idValdation(support.WritenBy) 
+                && validationService.textValidation(support.Title) 
+                && validationService.textValidation(support.Summary))
             {
-                if (validationService.ifObejectIsNull(support))
+                if (validationService.objectValidation(support))
                 {
                     supportService.AddSupportToDatabase(support);
                     return Created("", support);
@@ -63,15 +65,14 @@ namespace Events.Controllers
             return NotFound(ErrorService.GetError("UserId, Title and summary can not be empty"));
         }
 
-        // need to finish it
-        [HttpPatch("{id}/{solvedBy}/{message}")]
+        [HttpPatch("solve/{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<bool> writeSolution(int? id, string message, int? solvedBy)
+        public ActionResult writeSolution(int? id, string message, int? solvedBy)
         {
-            if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value))
-                && validationService.textFieldValidation(message) && validationService.creatorValidation(solvedBy))
+            if (validationService.objectValidation(supportService.getSupportById(id.Value))
+                && validationService.textValidation(message) && validationService.idValdation(solvedBy))
             {
                 supportService.getSupportById(id.Value).SolvedBy = solvedBy.Value;
                 supportService.getSupportById(id.Value).Solution = message;
@@ -87,7 +88,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteSupportMessage(int? id)
         {
-            if (validationService.ifObejectIsNull(supportService.getSupportById(id.Value)))
+            if (validationService.objectValidation(supportService.getSupportById(id.Value)))
             {
                 db.Support.Remove(supportService.getSupportById(id.Value));
                 db.SaveChanges();

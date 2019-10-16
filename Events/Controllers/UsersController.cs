@@ -11,7 +11,7 @@ namespace Events.Controllers
     public class UsersController : ControllerBase
     {
         private UserService userService = new UserService();
-        private UserValidationService validationService = new UserValidationService();
+        private ValidationService validationService = new ValidationService();
 
         [HttpGet]
         [Authorize]
@@ -30,9 +30,9 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)
         {
-            if (validationService.isIdNotEqualsToNull(id))
+            if (validationService.idValdation(id))
             {
-                if (validationService.isUserEqualsToNull(userService.getUserById(id.Value)))
+                if (validationService.objectValidation(userService.getUserById(id.Value)))
                     return Ok(userService.getUserById(id.Value));
                 return NotFound(ErrorService.GetError("User not found"));
             }
@@ -45,7 +45,7 @@ namespace Events.Controllers
         public ActionResult deleteUser(int? id)
         {
             User user = userService.getUserById(id.Value);
-            if (validationService.isIdNotEqualsToNull(id) && validationService.isUserEqualsToNull(user))
+            if (validationService.idValdation(id) && validationService.objectValidation(user))
             {
                 userService.deleteUserById(id.Value, user);
                 return NoContent();
@@ -60,7 +60,7 @@ namespace Events.Controllers
         public ActionResult banUser(int? id)
         {
             User user = userService.getUserById(id.Value);
-            if (validationService.isIdNotEqualsToNull(id) && validationService.isUserEqualsToNull(user))
+            if (validationService.idValdation(id) && validationService.objectValidation(user))
             {
                 userService.BanOrUnban(user);
                 return Ok(user);

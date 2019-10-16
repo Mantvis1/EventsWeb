@@ -12,7 +12,7 @@ namespace Events.Controllers
     public class EventsController : ControllerBase
     {
         private EventService eventsService = new EventService();
-        private EventValidationService eventValidation = new EventValidationService();
+        private ValidationService validationService = new ValidationService();
         private UserService userService = new UserService();
 
         [HttpGet]
@@ -31,9 +31,9 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getEventById(int? id)
         {
-            if (eventValidation.isIdNotEqualsToNull(id))
+            if (validationService.idValdation(id))
             {
-                if (eventValidation.isUserEqualsToNull(eventsService.getEventById(id.Value)))
+                if (validationService.objectValidation(eventsService.getEventById(id.Value)))
                     return Ok(eventsService.getEventById(id.Value));
                 return NotFound(ErrorService.GetError("Event not found"));
             }
@@ -46,7 +46,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteEvent(int id)
         {
-            if (eventsService.getEventById(id) != null)
+            if (validationService.objectValidation(eventsService.getEventById(id))) // object validation
             {
                 eventsService.deleteEvent(id);
                 return NoContent();
@@ -60,9 +60,11 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult createNewEvent([FromBody]Event @event)
         {
-            if (eventValidation.newEventCreation(@event.title, @event.summary, @event.CreatedBy))
+            if (validationService.textValidation(@event.title) 
+                && validationService.textValidation(@event.summary)
+                && validationService.idValdation(@event.CreatedBy))
             {
-                if (userService.getUserById(@event.CreatedBy) != null)
+                if (validationService.objectValidation(userService.getUserById(@event.CreatedBy)))
                 {
                     return Ok(eventsService.createNewEvent(@event.title, @event.summary, @event.CreatedBy));
                 }
@@ -77,7 +79,7 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult edtiEventInformation(int? id, [FromBody]EventUpdateFrom @event)
         {
-            if (eventsService.getEventById(id.Value) != null)
+            if (validationService.objectValidation(eventsService.getEventById(id.Value)))
             {
                 return Ok(eventsService.editEventInformation(id.Value, @event.title, @event.summary));
             }
