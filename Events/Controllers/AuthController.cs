@@ -3,14 +3,8 @@ using Events.Models.UserModels;
 using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Text;
 
 namespace Events.Controllers
@@ -18,8 +12,11 @@ namespace Events.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
-    { 
-        private EventsDBContext db = new EventsDBContext();
+    {
+
+        private ValidationService validationService = new ValidationService();
+        private AuthService authService = new AuthService();
+        private UserService userService = new UserService();
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -30,29 +27,13 @@ namespace Events.Controllers
         {
             var header = Request.Headers["Authorization"];
 
-            if (header.ToString().StartsWith("Basic"))
+            if (validationService.startsWithValidation(header, "Basic"))
             {
-                var credValue = header.ToString().Substring("Basic".Length).Trim();
-                var userNameAndPasswordenc = Encoding.UTF8.GetString(Convert.FromBase64String(credValue));
-                var userNameAndPassword = userNameAndPasswordenc.Split(":");
+                var userNameAndPassword = authService.getNameAndPassword(header.ToString());
 
-                User user = db.User.Where(x => x.Name == userNameAndPassword[0] && x.Password == userNameAndPassword[1]).FirstOrDefault();
-                if (user != null)
-                {
-                    var claimsData = new[] { new Claim(ClaimTypes.Name, userNameAndPassword[0]) };
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("45wgr6dvh634g1kj684hr894v4sg9dgh54vsd4bdf4bs4d9n5cvs4bdfv4z"));
-                    var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var token = new JwtSecurityToken(
-                        issuer: "mysite.com",
-                        audience: "mysite.com",
-                        expires: DateTime.Now.AddHours(1),
-                        claims: claimsData,
-                        signingCredentials: signIn
-                        );
-
-                    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                    return Ok(tokenString);
+                if (validationService.objectValidation(userService.getUserByNameAndPassword(userNameAndPassword[0], userNameAndPassword[1])))
+                { 
+                    return Ok(authService.getToken(userNameAndPassword[0]));
                 }
                 return NotFound(ErrorService.GetError("user not found"));
             }
@@ -65,14 +46,13 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Register([FromBody]UserRegisterModel userRegisterModel)
         {
-            if (userRegisterModel.Name != null && userRegisterModel.Password != null && userRegisterModel.Email != null)
+            if (validationService.textValidation(userRegisterModel.Name)
+                && validationService.textValidation(userRegisterModel.Password)
+                && validationService.emailValidation(userRegisterModel.Email))
             {
-                User user = new User(userRegisterModel.Name, userRegisterModel.Password, false, false);
-                db.User.Add(user);
-                db.SaveChanges();
-                return Ok(user);
+                return Ok(authService.createNewUser(userRegisterModel.Name, userRegisterModel.Password));
             }
-            return NotFound();
+            return NotFound(ErrorService.GetError("Username, password or email is not valid"));
         }
     }
 }

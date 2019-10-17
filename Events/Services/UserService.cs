@@ -60,5 +60,10 @@ namespace Events.Services
             db.User.Remove(user);
             db.SaveChanges();
         }
+
+        public User getUserByNameAndPassword(string name, string password)
+        {
+            return db.User.Where(x => x.Name == name && x.Password == password).FirstOrDefault();
+        }
     }
 }

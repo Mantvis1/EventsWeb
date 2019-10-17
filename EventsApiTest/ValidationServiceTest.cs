@@ -41,5 +41,14 @@ namespace EventsApiTest
         {
             Assert.True(validationService.emailValidation(email) == result, "email validation success");
         }
+
+        [Theory]
+        [InlineData("testsometext@gmail.com", true)]
+        [InlineData(null, false)]
+        [InlineData("sometext", false)]
+        public void startsWithValidationTest(string text, bool result)
+        {
+            Assert.True(validationService.startsWithValidation(text,"test") == result, "starts with validation success");
+        }
     }
 }

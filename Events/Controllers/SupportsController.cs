@@ -12,7 +12,6 @@ namespace Events.Controllers
     [ApiController]
     public class SupportsController : ControllerBase
     {
-        private EventsDBContext db = new EventsDBContext();
         private SupportService supportService = new SupportService();
         private ValidationService validationService = new ValidationService();
 
@@ -74,9 +73,7 @@ namespace Events.Controllers
             if (validationService.objectValidation(supportService.getSupportById(id.Value))
                 && validationService.textValidation(message) && validationService.idValdation(solvedBy))
             {
-                supportService.getSupportById(id.Value).SolvedBy = solvedBy.Value;
-                supportService.getSupportById(id.Value).Solution = message;
-                db.SaveChanges();
+                supportService.updateSupport(id.Value,solvedBy.Value, message);
                 return Ok(supportService.getSupportById(id.Value));
             }
             return NotFound(ErrorService.GetError("id, message and solved by can not be empty"));
@@ -90,8 +87,7 @@ namespace Events.Controllers
         {
             if (validationService.objectValidation(supportService.getSupportById(id.Value)))
             {
-                db.Support.Remove(supportService.getSupportById(id.Value));
-                db.SaveChanges();
+                supportService.deleteSupportFromDatabase(id.Value);
                 return NoContent();
             }
             return NotFound(ErrorService.GetError("Id not null or dont exists"));

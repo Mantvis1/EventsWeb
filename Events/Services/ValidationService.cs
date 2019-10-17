@@ -35,5 +35,17 @@ namespace Events.Services
                 return true;
             return false;
         }
+
+        public bool startsWithValidation(string text, string startsWith)
+        {
+            if (textValidation(text))
+            {
+                if (text.ToString().StartsWith(startsWith))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

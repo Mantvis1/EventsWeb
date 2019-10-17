@@ -7,7 +7,6 @@ namespace Events.Services
     public class SupportService
     {
         private EventsDBContext db = new EventsDBContext();
-    //    private ValidationService validationService = new ValidationService();
 
         private List<Support> getSupportsListByWriterId(int id)
         {
@@ -57,6 +56,20 @@ namespace Events.Services
         public void AddSupportToDatabase(Support support)
         {
             db.Support.Add(support);
+            db.SaveChanges();
+        }
+
+        public void deleteSupportFromDatabase(int id)
+        {
+            db.Support.Remove(getSupportById(id));
+            db.SaveChanges();
+        }
+
+        public void updateSupport(int id ,int solvedBy, string message)
+        {
+            Support support = getSupportById(id);
+            support.SolvedBy = solvedBy;
+            support.Solution = message;
             db.SaveChanges();
         }
     }

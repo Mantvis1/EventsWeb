@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Events.Models;
+﻿using Events.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +9,10 @@ namespace Events.Controllers
     [ApiController]
     public class UserEventsController : ControllerBase
     {
-        private EventsDBContext db = new EventsDBContext();
-        private List<UserEvents> userEvents = new List<UserEvents>();
+        private ValidationService validationService = new ValidationService();
+        private UserEventsService userEventsService = new UserEventsService();
+        private UserService userService = new UserService();
+        private EventService eventService = new EventService();
 
         [HttpGet("{userId}")]
         [Authorize]
@@ -20,16 +20,15 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getUserEvents(int? userId)
         {
-            if (userId != null)
+            if (validationService.idValdation(userId))
             {
-                List<UserEvents> userEvents = db.userEvents.Where(x => x.Participan == userId.Value).ToList();
-                if (userEvents.Count > 0)
+                if (userEventsService.getUserEventsByParticipanIdCount(userId.Value) > 0)
                 {
-                    return Ok(userEvents);
+                    return Ok(userEventsService.getUserEventsByParticipanId(userId.Value));
                 }
-                return NotFound(new Error("0 events were found"));
+                return NotFound(ErrorService.GetError("0 events were found"));
             }
-            return NotFound(new Error("user id not found"));
+            return NotFound(ErrorService.GetError("user id not found"));
         }
 
         [HttpDelete("{userId}/{eventId}")]
@@ -38,18 +37,16 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUserEvent(int? userId, int? eventId)
         {
-            if (userId != null && eventId != null)
+            if (validationService.idValdation(userId) && validationService.idValdation(eventId))
             {
-                UserEvents userEvent = db.userEvents.Where(x => x.Participan == userId.Value && x.EventId == eventId.Value).FirstOrDefault();
-                if (userEvent != null)
+                if (validationService.objectValidation(userEventsService.getEventByUserIdAndEventId(userId.Value, eventId.Value)))
                 {
-                    db.userEvents.Remove(userEvent);
-                    db.SaveChanges();
+                    userEventsService.deleteUserEvent(userId.Value, eventId.Value);
                     return NoContent();
                 }
-                return NotFound(new Error("event not found"));
+                return NotFound(ErrorService.GetError("event not found"));
             }
-            return NotFound(new Error("user or event id not found"));
+            return NotFound(ErrorService.GetError("user or event id not found"));
         }
 
         [HttpPost("{userId}/{eventId}")]
@@ -58,18 +55,16 @@ namespace Events.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult joinEvent(int? userId, int? eventId)
         {
-            if (userId != null && eventId != null)
+            if (validationService.idValdation(userId) && validationService.idValdation(eventId))
             {
-                if (db.User.FirstOrDefault(x => x.Id == userId.Value) != null && db.Events.FirstOrDefault(x => x.id == eventId.Value) != null)
-                {
-                    UserEvents userEvents = new UserEvents(userId.Value, eventId.Value);
-                    db.userEvents.Add(userEvents);
-                    db.SaveChanges();
-                    return Ok(userEvents);
+                if (validationService.objectValidation(userService.getUserById(userId.Value))
+                    && validationService.objectValidation(eventService.getEventById(eventId.Value)))
+                {   
+                    return Ok(userEventsService.joinUserToEvent(userId.Value, eventId.Value));
                 }
-                return NotFound(new Error("user or event id not found"));
+                return NotFound(ErrorService.GetError("user or event id not found"));
             }
-            return NotFound(new Error("user or event id not found"));
+            return NotFound(ErrorService.GetError("user or event id not found"));
         }
     }
 }
