@@ -1,6 +1,5 @@
 using Events.Models;
 using Events.Services;
-using System;
 using Xunit;
 
 namespace EventsApiTest

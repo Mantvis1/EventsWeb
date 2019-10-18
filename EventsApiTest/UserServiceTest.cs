@@ -11,6 +11,7 @@ namespace EventsApiTest
         public void UserCountInDatabase()
         {
             int actuly = userService.getListLength();
+            Assert.False(true, "not impemented");
             Assert.True(1 == actuly, " actuly is " + actuly);
         }
     }

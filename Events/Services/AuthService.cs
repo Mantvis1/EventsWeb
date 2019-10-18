@@ -43,7 +43,6 @@ namespace Events.Services
             var credValue = header.ToString().Substring("Basic".Length).Trim();
             var userNameAndPasswordenc = Encoding.UTF8.GetString(Convert.FromBase64String(credValue));
             return userNameAndPasswordenc.Split(":");
-
         }
     }
 }

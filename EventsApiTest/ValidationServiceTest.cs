@@ -37,6 +37,7 @@ namespace EventsApiTest
         [Theory]
         [InlineData("sometext@gmail.com", true)]
         [InlineData(null, false)]
+        [InlineData("", false)]
         public void emailValidationTest(string email, bool result)
         {
             Assert.True(validationService.emailValidation(email) == result, "email validation success");
