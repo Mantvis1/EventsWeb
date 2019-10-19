@@ -1,6 +1,6 @@
 using Events.Models.UserModels;
 using Events.Services;
-using System;
+using EventsApiTest.TestData;
 using Xunit;
 
 namespace EventsApiTest
@@ -8,7 +8,6 @@ namespace EventsApiTest
     public class ValidationServiceTest
     {
         private ValidationService validationService = new ValidationService();
-        private User testUser = new User("name", "pass", false, true);
 
         [Theory]
         [InlineData(2,true)]
@@ -19,10 +18,12 @@ namespace EventsApiTest
             Assert.True(result == expected, "id validation success");
         }
 
-        [Fact]
-        public void userVlidationTest()
+        [Theory]
+        [ClassData(typeof(ObjectTestData))]
+        public void userValidationTest(User user, bool result)
         {
-            throw new NotImplementedException("need to finish this test");
+            bool expected = validationService.objectValidation(user);
+            Assert.True(expected == result);
         }
 
         [Theory]

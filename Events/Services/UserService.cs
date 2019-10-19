@@ -37,7 +37,7 @@ namespace Events.Services
             db.SaveChanges();
         }
 
-        public void deleteUserById(int id, User user)
+        public void deleteUserById(int id)
         {
             if (userEventsService.getUserEventsByParticipanIdCount(id) > 0)
             {
@@ -57,13 +57,18 @@ namespace Events.Services
                 db.SaveChanges();
             }
 
-            db.User.Remove(user);
+            db.User.Remove(getUserById(id));
             db.SaveChanges();
         }
 
         public User getUserByNameAndPassword(string name, string password)
         {
             return db.User.Where(x => x.Name == name && x.Password == password).FirstOrDefault();
+        }
+
+        public int getIdByNameAndPassword(string[] nameAndPass)
+        {
+           return db.User.Where(x => x.Name == nameAndPass[0] && x.Password == nameAndPass[1]).FirstOrDefault().Id; 
         }
     }
 }

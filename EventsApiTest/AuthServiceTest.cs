@@ -4,9 +4,21 @@ using Xunit;
 
 namespace EventsApiTest
 {
-    public class AuthServiceTest
+    public class AuthServiceTest :IDisposable
     {
-        private AuthService authService = new AuthService();
+        protected AuthService authService;
+        private AfterAndBeforeTests tests;
+
+        public AuthServiceTest()
+        {
+            authService = new AuthService();
+            tests = new AfterAndBeforeTests();
+        }
+
+        public void Dispose()
+        {
+            tests.clearDB();
+        }
 
         [Theory]
         [InlineData("Basic bmFtZTpwYXNz", new string[]{"name", "pass"})]

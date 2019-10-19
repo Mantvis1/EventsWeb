@@ -47,7 +47,7 @@ namespace Events.Controllers
             User user = userService.getUserById(id.Value);
             if (validationService.idValdation(id) && validationService.objectValidation(user))
             {
-                userService.deleteUserById(id.Value, user);
+                userService.deleteUserById(id.Value);
                 return NoContent();
             }
             return NotFound(ErrorService.GetError("User not found"));
