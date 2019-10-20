@@ -1,24 +1,29 @@
 ﻿using Events.Services;
+using EventsApiTest.TestData;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventsApiTest
 {
+    [ExcludeFromCodeCoverage]
     class AfterAndBeforeTests
     {
-        private string[] testUser = new string[] { "testName", "testPass" };
+        private TestConstants testConstants = new TestConstants();
 
         private UserService userService = new UserService();
+        private EventService eventService = new EventService();
+        private SupportService supportService = new SupportService();
 
         public void clearDB()
         {
-            while (userService.getUserByNameAndPassword(getTestUser()[0], getTestUser()[1]) != null)
+            while (userService.getUserByNameAndPassword(testConstants.getUser().Name, testConstants.getUser().Password) != null)
             {
-                userService.deleteUserById(userService.getIdByNameAndPassword(testUser));
+                userService.deleteUserById(userService.getIdByNameAndPassword(new string[] { testConstants.getUser().Name, testConstants.getUser().Password }));
             }
-        }
 
-        public string[] getTestUser()
-        {
-            return testUser;
+            while(eventService.getEventByTitleAndAuthor(testConstants.getTestEvent().title, testConstants.getTestEvent().CreatedBy)!= null)
+            {
+                eventService.deleteEvent(eventService.getEventIdByTitleAndAuthor(testConstants.getTestEvent().title, testConstants.getTestEvent().CreatedBy));
+            }
         }
     }
 }

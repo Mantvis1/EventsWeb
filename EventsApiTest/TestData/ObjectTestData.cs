@@ -1,18 +1,15 @@
-﻿using Events.Models.UserModels;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EventsApiTest.TestData
 {
     public class ObjectTestData : IEnumerable<object[]>
     {
-        private User testUser = new User("name", "pass", false, true);
+        private TestConstants constants = new TestConstants();
 
         public IEnumerator<object[]> GetEnumerator()
         {
-            yield return new object[] { testUser, true };
+            yield return new object[] { constants.getUser(), true };
             yield return new object[] { null, false };
         }
 

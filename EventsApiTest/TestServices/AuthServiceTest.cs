@@ -1,12 +1,14 @@
 ﻿using Events.Services;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace EventsApiTest
 {
-    public class AuthServiceTest :IDisposable
+    [ExcludeFromCodeCoverage]
+    public class AuthServiceTest : IDisposable
     {
-        protected AuthService authService;
+        private AuthService authService;
         private AfterAndBeforeTests tests;
 
         public AuthServiceTest()
@@ -21,7 +23,7 @@ namespace EventsApiTest
         }
 
         [Theory]
-        [InlineData("Basic bmFtZTpwYXNz", new string[]{"name", "pass"})]
+        [InlineData("Basic bmFtZTpwYXNz", new string[] { "name", "pass" })]
         public void Test(string header, string[] result)
         {
             var expected = authService.getNameAndPassword(header);

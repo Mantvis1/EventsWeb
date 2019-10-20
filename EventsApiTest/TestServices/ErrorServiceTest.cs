@@ -1,9 +1,11 @@
 using Events.Models;
 using Events.Services;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace EventsApiTest
 {
+    [ExcludeFromCodeCoverage]
     public class ErrorServiceTest
     {
         private ErrorService errorService;

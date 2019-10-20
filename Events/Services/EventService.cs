@@ -1,4 +1,5 @@
 ﻿using Events.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +24,16 @@ namespace Events.Services
         public List<Event> getAllEvents()
         {
             return db.Events.ToList();
+        }
+
+        public int getEventIdByTitleAndAuthor(string title, int createdBy)
+        {
+            return db.Events.Where(x => x.title == title && x.CreatedBy == createdBy).FirstOrDefault().id;
+        }
+
+        public Event getEventByTitleAndAuthor(string title, int createdBy)
+        {
+            return db.Events.Where(x => x.title == title && x.CreatedBy == createdBy).FirstOrDefault();
         }
 
         public int getAllEventsCount()

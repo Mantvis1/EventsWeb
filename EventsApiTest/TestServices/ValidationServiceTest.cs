@@ -1,10 +1,12 @@
 using Events.Models.UserModels;
 using Events.Services;
 using EventsApiTest.TestData;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace EventsApiTest
 {
+    [ExcludeFromCodeCoverage]
     public class ValidationServiceTest
     {
         private ValidationService validationService = new ValidationService();
