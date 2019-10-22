@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using EventsApiTest;
 
 namespace Events.Services
 {
@@ -44,5 +45,11 @@ namespace Events.Services
             var userNameAndPasswordenc = Encoding.UTF8.GetString(Convert.FromBase64String(credValue));
             return userNameAndPasswordenc.Split(":");
         }
+
+        public virtual bool createNewUser(IUser user)
+        {
+            return true;
+        }
+
     }
 }

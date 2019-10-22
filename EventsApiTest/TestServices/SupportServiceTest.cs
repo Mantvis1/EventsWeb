@@ -32,6 +32,5 @@ namespace EventsApiTest.TestServices
             Assert.NotEmpty(actuly);
             Assert.True(actuly.Count == constants.getSupportCount());
         }
-
     }
 }

@@ -2,6 +2,7 @@ using Events.Constants;
 using Events.Models.UserModels;
 using Events.Services;
 using EventsApiTest.TestData;
+using Moq;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Xunit;
@@ -77,6 +78,17 @@ namespace EventsApiTest
             Assert.True(user.IsBanned == true, "user is banned");
             user.IsBanned = Banned.unbanUser();
             Assert.True(user.IsBanned == false, "user is not banned");
+        }
+
+        [Fact]
+        public void createUserUsingMock()
+        {
+            var mockUserBuilder = new Mock<IUser>();
+            mockUserBuilder.Setup(x => x.createNewUser(constants.getUser().Name, constants.getUser().Password))
+                .Returns(true);
+            bool isCreated = authService.createNewUser(mockUserBuilder.Object);
+
+            Assert.True(isCreated);
         }
     }
 }
