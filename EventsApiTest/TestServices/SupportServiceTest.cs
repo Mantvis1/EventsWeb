@@ -32,5 +32,18 @@ namespace EventsApiTest.TestServices
             Assert.NotEmpty(actuly);
             Assert.True(actuly.Count == constants.getSupportCount());
         }
+
+        [Fact]
+        public void AddAndDeleteSupport()
+        {
+            supportService.AddSupportToDatabase(constants.getSupport());
+            int id = supportService.GetSupportByTitleAndAuthor(constants.getSupport().Title, constants.getSupport().WritenBy);
+
+            Assert.NotNull(supportService.getSupportById(id));
+
+            supportService.deleteSupportFromDatabase(id);
+
+            Assert.Null(supportService.getSupportById(id));
+        }
     }
 }

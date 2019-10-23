@@ -72,5 +72,10 @@ namespace Events.Services
             support.Solution = message;
             db.SaveChanges();
         }
+
+        public int GetSupportByTitleAndAuthor(string title, int author)
+        {
+            return db.Support.Where(x => x.Title == title && x.WritenBy == author).FirstOrDefault().Id;
+        }
     }
 }

@@ -43,5 +43,23 @@ namespace EventsApiTest.TestServices
             Assert.NotEmpty(actuly);
             Assert.True(actuly.Count == constants.getEventCount());
         }
+
+        [Theory]
+        [InlineData("editedEventTitle", "EditedEventSummary",true,true)]
+        [InlineData("", "",false,false)]
+        [InlineData("editedEventTitle","", true,false)]
+        [InlineData("", "EditedEventSummary", false,true)]
+        public void EditEvent(string title, string summary, bool titleEdition, bool summaryEdition)
+        {
+            var @event = eventService.createNewEvent(constants.getTestEvent().title, constants.getTestEvent().summary, constants.getTestEvent().CreatedBy);
+            int id = eventService.getEventIdByTitleAndAuthor(constants.getTestEvent().title, constants.getTestEvent().CreatedBy);
+
+            eventService.editEventInformation(id, title, summary);
+
+            Assert.Equal(eventService.getEventById(id).title != constants.getTestEvent().title, titleEdition);
+            Assert.Equal(eventService.getEventById(id).summary != constants.getTestEvent().summary, summaryEdition);
+
+            eventService.editEventInformation(id, constants.getTestEvent().title, constants.getTestEvent().summary);
+        }
     }
 }

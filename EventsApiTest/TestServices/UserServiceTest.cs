@@ -1,4 +1,5 @@
 using Events.Constants;
+using Events.Models;
 using Events.Models.UserModels;
 using Events.Services;
 using EventsApiTest.TestData;
@@ -16,6 +17,9 @@ namespace EventsApiTest
         private UserService userService;
         private AuthService authService;
         private TestConstants constants;
+        private EventService eventService;
+        private SupportService supportService;
+        private UserEventsService userEventsService;
 
         public UserServiceTest()
         {
@@ -23,6 +27,9 @@ namespace EventsApiTest
             userService = new UserService();
             authService = new AuthService();
             constants = new TestConstants();
+            eventService = new EventService();
+            supportService = new SupportService();
+            userEventsService = new UserEventsService();
         }
 
         public void Dispose()
@@ -74,9 +81,9 @@ namespace EventsApiTest
         public void BanAndUnbanUser()
         {
             User user = authService.createNewUser(constants.getUser().Name, constants.getUser().Password);
-            user.IsBanned = Banned.banUser();
+            userService.BanOrUnban(user);
             Assert.True(user.IsBanned == true, "user is banned");
-            user.IsBanned = Banned.unbanUser();
+            userService.BanOrUnban(user);
             Assert.True(user.IsBanned == false, "user is not banned");
         }
 
@@ -89,6 +96,23 @@ namespace EventsApiTest
             bool isCreated = authService.createNewUser(mockUserBuilder.Object);
 
             Assert.True(isCreated);
+        }
+
+        [Fact]
+        public void deleteUser()
+        {
+            authService.createNewUser(constants.getUser().Name, constants.getUser().Password);
+            int id = userService.getIdByNameAndPassword(constants.getNameAndPass());
+
+            eventService.createNewEvent(constants.getTestEvent().title, constants.getTestEvent().summary, id);
+            int eventId = eventService.getEventIdByTitleAndAuthor(constants.getTestEvent().title, id);
+
+            supportService.AddSupportToDatabase(new Support(constants.getSupport().Title, constants.getSupport().Summary, id));
+            userEventsService.joinUserToEvent(id, eventId);
+
+            userService.deleteUserById(id);
+
+            Assert.Null(userService.getUserById(id));
         }
     }
 }

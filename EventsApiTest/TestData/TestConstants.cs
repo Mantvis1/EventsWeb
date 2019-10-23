@@ -44,5 +44,10 @@ namespace EventsApiTest.TestData
         {
             return supportCount;
         }
+
+        public string[] getNameAndPass()
+        {
+            return new string[] { user.Name, user.Password };
+        }
     }
 }
