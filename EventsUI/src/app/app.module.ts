@@ -6,11 +6,12 @@ import { AppComponent } from "./app.component";
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { EventsComponent } from './events/events.component';
-import { EventDetailsComponent } from './event-details/event-details.component';
-import { UsersComponent } from './users/users.component';
-import { UserDetailsComponent } from './user-details/user-details.component';
-import { HomeComponent } from './home/home.component';
+import { EventsComponent } from "./events/events.component";
+import { EventDetailsComponent } from "./event-details/event-details.component";
+import { UsersComponent } from "./users/users.component";
+import { UserDetailsComponent } from "./user-details/user-details.component";
+import { HomeComponent } from "./home/home.component";
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { HomeComponent } from './home/home.component';
     UserDetailsComponent,
     HomeComponent
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, HttpClientModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent]
 })

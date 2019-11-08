@@ -1,2 +1,7 @@
-<p>events works!</p>
-<a [routerLink]="['/event', '5']" class="btn btn-success">Show details</a>
+<h1>events</h1>
+<ul>
+  <li *ngFor="let event of events">
+    {{ event.title }}
+    <a [routerLink]="['/event', event.id]" class="btn btn-info">Show details</a>
+  </li>
+</ul>
