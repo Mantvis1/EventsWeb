@@ -26,7 +26,7 @@ namespace Events.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+  //      [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getEventById(int? id)

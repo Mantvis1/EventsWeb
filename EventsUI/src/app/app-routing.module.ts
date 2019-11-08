@@ -3,11 +3,11 @@ import { Routes, RouterModule } from "@angular/router";
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { EventsComponent } from "./events/events.component";
-import { EventDetailsComponent } from "./event-details/event-details.component";
+import { EventsComponent } from "./Event/events/events.component";
+import { EventDetailsComponent } from "./Event/event-details/event-details.component";
 import { HomeComponent } from "./home/home.component";
-import { UsersComponent } from "./users/users.component";
-import { UserDetailsComponent } from "./user-details/user-details.component";
+import { UsersComponent } from "./User/users/users.component";
+import { UserDetailsComponent } from "./User/user-details/user-details.component";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
