@@ -15,7 +15,7 @@ namespace Events.Controllers
         private EventService eventService = new EventService();
 
         [HttpGet("{userId}")]
-        [Authorize]
+      //  [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult getUserEvents(int? userId)
@@ -32,7 +32,7 @@ namespace Events.Controllers
         }
 
         [HttpDelete("{userId}/{eventId}")]
-        [Authorize]
+      //  [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult deleteUserEvent(int? userId, int? eventId)
@@ -50,7 +50,7 @@ namespace Events.Controllers
         }
 
         [HttpPost("{userId}/{eventId}")]
-        [Authorize]
+     //   [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult joinEvent(int? userId, int? eventId)

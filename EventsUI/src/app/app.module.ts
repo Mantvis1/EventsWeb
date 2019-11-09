@@ -12,6 +12,9 @@ import { UsersComponent } from "./User/users/users.component";
 import { UserDetailsComponent } from "./User/user-details/user-details.component";
 import { HomeComponent } from "./home/home.component";
 import { HttpClientModule } from "@angular/common/http";
+import { MyEventsComponent } from "./Event/my-events/my-events.component";
+import { NewEventComponent } from "./Event/new-event/new-event.component";
+import { EditEventComponent } from "./Event/edit-event/edit-event.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { HttpClientModule } from "@angular/common/http";
     EventDetailsComponent,
     UsersComponent,
     UserDetailsComponent,
-    HomeComponent
+    HomeComponent,
+    MyEventsComponent,
+    NewEventComponent,
+    EditEventComponent
   ],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
   providers: [],

@@ -35,7 +35,6 @@ export class EventDetailsComponent implements OnInit {
         d.summary,
         name.prototype.constructor.name
       );
-      console.log(this.event);
     });
   }
 
