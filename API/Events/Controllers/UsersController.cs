@@ -14,7 +14,7 @@ namespace Events.Controllers
         private ValidationService validationService = new ValidationService();
 
         [HttpGet]
-        [Authorize]
+       // [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
@@ -25,7 +25,7 @@ namespace Events.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+      //  [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetById(int? id)

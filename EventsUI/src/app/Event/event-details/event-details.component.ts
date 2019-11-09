@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiService } from "../../api.service";
+import { Event } from "./../shared/event.model";
 
 @Component({
   selector: "app-event-details",
@@ -9,7 +10,7 @@ import { ApiService } from "../../api.service";
 })
 export class EventDetailsComponent implements OnInit {
   id: any;
-  event: any;
+  event: Event;
   url: any;
 
   constructor(private activatedRoute: ActivatedRoute, private api: ApiService) {
@@ -19,7 +20,22 @@ export class EventDetailsComponent implements OnInit {
 
   getEventById(): void {
     this.api.getUrl(this.url).subscribe(data => {
-      this.event = { title: data.title, id: data.id, summary: data.summary };
+      const d = data as any;
+      const name = function(): string {
+        let result;
+        this.name.length = 0;
+        this.api.getUrl("users/" + d.createdBy).subscribe(userInfo => {
+          result = userInfo.name;
+        });
+        return result;
+      };
+      this.event = new Event(
+        d.id,
+        d.title,
+        d.summary,
+        name.prototype.constructor.name
+      );
+      console.log(this.event);
     });
   }
 
