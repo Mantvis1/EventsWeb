@@ -1,4 +1,6 @@
 <p>new-event works!</p>
-<div>Title<input /></div>
-<div>Summary<textarea></textarea></div>
-<button class="btn btn-info">Sukurti</button>
+<div>Title<input #title /></div>
+<div>Summary<textarea #summary></textarea></div>
+<button class="btn btn-info" (click)="newEvent(title.value, summary.value)">
+  Sukurti
+</button>

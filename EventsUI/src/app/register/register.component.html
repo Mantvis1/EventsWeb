@@ -1,1 +1,12 @@
 <p>register works!</p>
+<div>Vardas:</div>
+<input #name />
+<div>Slaptazodis:</div>
+<input #pass type="password" />
+<div>Pakartototi slaptazodi:</div>
+<input #passRepeat type="password" /> <br />
+<button (click)="register(name.value, pass.value, passRepeat.value)">
+  Registruotis
+</button>
+
+<div *ngIf="this.error != null">{{ error }}</div>

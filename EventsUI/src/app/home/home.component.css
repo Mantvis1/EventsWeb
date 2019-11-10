@@ -1,0 +1,29 @@
+li {
+  list-style-type: none;
+}
+
+nav {
+  width: 0 3vw;
+  background-color: black;
+  font-size: 3vh;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  padding: 1vw;
+  font-family: monospace;
+}
+
+a:hover {
+  background-color: indigo;
+}
