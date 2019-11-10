@@ -2,6 +2,8 @@
 <ul>
   <li *ngFor="let event of events">
     {{ event.id }}
-    <a [routerLink]="['/event', event.id]" class="btn btn-info">Show details</a>
+    <a [routerLink]="['/event/edit', event.id]" class="btn btn-info"
+      >Show details</a
+    >
   </li>
 </ul>

@@ -15,6 +15,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { MyEventsComponent } from "./Event/my-events/my-events.component";
 import { NewEventComponent } from "./Event/new-event/new-event.component";
 import { EditEventComponent } from "./Event/edit-event/edit-event.component";
+import { MainMeniuComponent } from './main-meniu/main-meniu.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { EditEventComponent } from "./Event/edit-event/edit-event.component";
     HomeComponent,
     MyEventsComponent,
     NewEventComponent,
-    EditEventComponent
+    EditEventComponent,
+    MainMeniuComponent
   ],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
   providers: [],

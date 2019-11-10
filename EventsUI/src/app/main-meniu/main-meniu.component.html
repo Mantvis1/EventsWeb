@@ -1,0 +1,30 @@
+<nav>
+  <ul>
+    <li class="nav-item"><a [routerLink]="['']" class="">Namai</a></li>
+    <ul>
+      <li class="nav-item">
+        <a [routerLink]="['/events']" class="">Renginiai</a>
+      </li>
+      <li class="nav-item">
+        <a [routerLink]="['/myEvents']" class="">Mano renginiai</a>
+      </li>
+      <li class="nav-item">
+        <a [routerLink]="['/new']" class="">Naujas renginys</a>
+      </li>
+    </ul>
+    <ul>
+      <li class="nav-item">
+        <a [routerLink]="['/users']" class="">Vartotojai</a>
+      </li>
+      <li class="nav-item">
+        <a [routerLink]="['/user', '5']" class="">Profilis</a>
+      </li>
+    </ul>
+    <li class="nav-item">
+      <a [routerLink]="['/register']" class="">Registruotis</a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/login']" class="">Prisijungti</a>
+    </li>
+  </ul>
+</nav>

@@ -11,6 +11,7 @@ import { UserDetailsComponent } from "./User/user-details/user-details.component
 import { MyEventsComponent } from "./Event/my-events/my-events.component";
 import { EditEventComponent } from "./Event/edit-event/edit-event.component";
 import { NewEventComponent } from "./Event/new-event/new-event.component";
+import { MainMeniuComponent } from "./main-meniu/main-meniu.component";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
@@ -22,6 +23,11 @@ const routes: Routes = [
   { path: "new", component: NewEventComponent },
   { path: "users", component: UsersComponent },
   { path: "user/:id", component: UserDetailsComponent },
+  {
+    path: "",
+    component: MainMeniuComponent,
+    outlet: "mainMeniu"
+  },
   { path: "", component: HomeComponent },
   { path: "**", component: PageNotFoundComponent }
 ];

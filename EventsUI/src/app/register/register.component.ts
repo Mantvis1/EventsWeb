@@ -12,10 +12,13 @@ export class RegisterComponent implements OnInit {
   constructor(private router: Router) {}
 
   register(name: string, pass: string, passRepeat: string) {
+    if (name.length == 0 || pass.length == 0) {
+      this.showError("vardas ir slaptazodis negali buti tusti");
+    }
     if (pass == passRepeat) {
       this.addNewUser(name, pass);
     }
-    this.showError();
+    this.showError("Slaptazodziai nesutampa");
   }
 
   redirectToLogIn() {
@@ -26,8 +29,9 @@ export class RegisterComponent implements OnInit {
     console.log(name + " " + password);
     this.redirectToLogIn();
   }
-  showError() {
-    this.error = "Slaptazodziai nesutampa";
+  showError(message: string) {
+    this.error = "";
   }
+
   ngOnInit() {}
 }
