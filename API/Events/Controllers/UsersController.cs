@@ -1,12 +1,14 @@
 ﻿using Events.Models.UserModels;
 using Events.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Events.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -54,7 +56,7 @@ namespace Events.Controllers
         }
 
         [HttpPatch("{id}")]
-        [Authorize]
+      //  [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult banUser(int? id)

@@ -1,5 +1,5 @@
 ﻿using Events.Services;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +7,7 @@ namespace Events.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class UserEventsController : ControllerBase
     {
         private ValidationService validationService = new ValidationService();

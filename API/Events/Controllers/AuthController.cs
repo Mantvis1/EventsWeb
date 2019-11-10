@@ -1,15 +1,14 @@
-﻿using Events.Models;
-using Events.Models.UserModels;
+﻿using Events.Models.UserModels;
 using Events.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Text;
 
 namespace Events.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class AuthController : ControllerBase
     {

@@ -12,4 +12,8 @@ export class ApiService {
   getUrl(end: string) {
     return this.http.get(url + end);
   }
+
+  patchUrl(end: string) {
+    return this.http.patch(url + end, null);
+  }
 }

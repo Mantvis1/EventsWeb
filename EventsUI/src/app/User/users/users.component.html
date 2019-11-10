@@ -9,13 +9,31 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>John</td>
-      <td><button class="btn btn-danger">Ban</button></td>
-    </tr>
-    <tr>
-      <td>Mppp</td>
-      <td><button class="btn btn-success">UnBan</button></td>
+    <tr *ngFor="let user of users">
+      <td>
+        {{ user.name }}
+        <input #userId class="hidden" value="user.id" />
+      </td>
+      <td>
+        <span *ngIf="user.isBanned == true; then thenBlock; else elseBlock">
+        </span>
+        <ng-template #thenBlock
+          ><button
+            class="btn btn-success"
+            (click)="banOrUnbanUser(userId.value)"
+          >
+            UnBan
+          </button></ng-template
+        >
+        <ng-template #elseBlock
+          ><button
+            class="btn btn-danger"
+            (click)="banOrUnbanUser(userId.value)"
+          >
+            Ban
+          </button></ng-template
+        >
+      </td>
     </tr>
   </tbody>
 </table>

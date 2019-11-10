@@ -12,9 +12,7 @@ export class EventsComponent implements OnInit {
 
   getEvents(): void {
     this.api.getUrl("events").subscribe(data => {
-      for (const d of data as any) {
-        this.events.push({ id: d.id, title: d.title });
-      }
+      this.events = data;
     });
   }
 
