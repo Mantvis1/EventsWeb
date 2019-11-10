@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiService } from "src/app/api.service";
+import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
   selector: "app-users",
@@ -11,7 +12,9 @@ export class UsersComponent implements OnInit {
   url: string;
   url2: string;
 
-  constructor(private api: ApiService) {
+  mySubscription: any;
+
+  constructor(private api: ApiService, private router: Router) {
     this.url = "users";
   }
 
@@ -21,8 +24,9 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  //need to reload html after button click. no solutions yet.
   banOrUnbanUser(userId: number) {
-    this.api.patchUrl("users/" + 1008).subscribe(
+    this.api.patchUrl("users/" + userId).subscribe(
       res => {
         console.log("received ok response from patch request");
       },

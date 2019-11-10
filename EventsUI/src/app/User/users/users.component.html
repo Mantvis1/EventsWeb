@@ -12,7 +12,7 @@
     <tr *ngFor="let user of users">
       <td>
         {{ user.name }}
-        <input #userId class="hidden" value="user.id" />
+        <input #userId class="hidden" value="{{ user.id }}" />
       </td>
       <td>
         <span *ngIf="user.isBanned == true; then thenBlock; else elseBlock">
@@ -22,7 +22,7 @@
             class="btn btn-success"
             (click)="banOrUnbanUser(userId.value)"
           >
-            UnBan
+            Remove blocking
           </button></ng-template
         >
         <ng-template #elseBlock
@@ -30,7 +30,7 @@
             class="btn btn-danger"
             (click)="banOrUnbanUser(userId.value)"
           >
-            Ban
+            Block
           </button></ng-template
         >
       </td>
