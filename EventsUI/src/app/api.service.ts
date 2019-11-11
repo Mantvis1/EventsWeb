@@ -16,4 +16,12 @@ export class ApiService {
   patchUrl(end: string) {
     return this.http.patch(url + end, null);
   }
+
+  deleteUrl(end: string) {
+    return this.http.delete(url + end);
+  }
+
+  postUrl(end: string, body: any) {
+    return this.http.post(url + end, body);
+  }
 }

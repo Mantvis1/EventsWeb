@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { ApiService } from "../api.service";
 
 @Component({
   selector: "app-login",
@@ -9,7 +10,7 @@ import { Router } from "@angular/router";
 export class LoginComponent implements OnInit {
   error: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
   validateUserInfo(name: string, pass: string): void {
     if (this.nameAndPassValidation(name, pass)) {

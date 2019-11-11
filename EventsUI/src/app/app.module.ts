@@ -15,7 +15,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { MyEventsComponent } from "./Event/my-events/my-events.component";
 import { NewEventComponent } from "./Event/new-event/new-event.component";
 import { EditEventComponent } from "./Event/edit-event/edit-event.component";
-import { MainMeniuComponent } from './main-meniu/main-meniu.component';
+import { MainMeniuComponent } from "./main-meniu/main-meniu.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,12 @@ import { MainMeniuComponent } from './main-meniu/main-meniu.component';
     EditEventComponent,
     MainMeniuComponent
   ],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ReactiveFormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
