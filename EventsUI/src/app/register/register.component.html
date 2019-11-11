@@ -1,16 +1,34 @@
-<div *ngIf="this.error != null">{{ error }}</div>
+<div class="alert alert-danger" *ngIf="this.error != null">{{ error }}</div>
 
 <div class="container">
-  <form [formGroup]="form" (ngSubmit)="submitForm()">
+  <form [formGroup]="form" (ngSubmit)="register()">
     <div class="form-group">
       <input placeholder="Vardas" formControlName="name" />
     </div>
-    <div>Slaptazodis:</div>
-    <input formControlName="password" type="password" />
-    <div>Pakartototi slaptazodi:</div>
-    <input formControlName="repeatPassword" type="password" /> <br />
-    <div>El. paštas</div>
-    <input formControlName="email" type="email" /> <br />
+    <div class="form-group">
+      <input
+        placeholder="Slaptazodis"
+        formControlName="password"
+        type="password"
+        autocomplete="cc-csc"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        placeholder="Pakartototi slaptazodi"
+        formControlName="repeatPassword"
+        type="password"
+        autocomplete="cc-csc"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        placeholder="El. paštas"
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+      />
+    </div>
     <button>
       Registruotis
     </button>
