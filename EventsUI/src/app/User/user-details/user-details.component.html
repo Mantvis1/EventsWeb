@@ -1,3 +1,22 @@
-<div>Name</div>
-<input value="name" />
-<button class="btn btn-info">Edit</button>
+<div class="container">
+  <form [formGroup]="userDataForm" (ngSubmit)="postUserInfo()">
+    <div class="form-group">
+      <span>Vardas:</span>
+      <input value="{{ userInfo.name }}" formControlName="name" />
+    </div>
+
+    <div class="form-group">
+      <span>Slaptažodis:</span>
+      <input
+        type="password"
+        value="{{ userInfo.password }}"
+        formControlName="password"
+      />
+    </div>
+    <button>Redaguoti</button>
+  </form>
+</div>
+
+<button class="btn btn-danger" (onClick)="deleteAccount()">
+  Trinti paskyrą
+</button>
