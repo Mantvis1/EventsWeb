@@ -31,7 +31,7 @@ namespace Events.Controllers
                 var userNameAndPassword = authService.getNameAndPassword(header.ToString());
 
                 if (validationService.objectValidation(userService.getUserByNameAndPassword(userNameAndPassword[0], userNameAndPassword[1])))
-                { 
+                {
                     return Ok(authService.getToken(userNameAndPassword[0]));
                 }
                 return NotFound(ErrorService.GetError("user not found"));
@@ -52,6 +52,21 @@ namespace Events.Controllers
                 return Ok(authService.createNewUser(userRegisterModel.Name, userRegisterModel.Password));
             }
             return NotFound(ErrorService.GetError("Username, password or email is not valid"));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult findUser([FromBody]UserRegisterModel userRegisterModel)
+        {
+            if (validationService.textValidation(userRegisterModel.Name) && validationService.textValidation(userRegisterModel.Password))
+            {
+                if (validationService.objectValidation(userService.getUserByNameAndPassword(userRegisterModel.Name, userRegisterModel.Password)))
+                    return Ok(userService.getUserByNameAndPassword(userRegisterModel.Name, userRegisterModel.Password));
+                return NotFound(ErrorService.GetError("User not found"));
+            }
+            return NotFound(ErrorService.GetError("User does not exists"));
         }
     }
 }
